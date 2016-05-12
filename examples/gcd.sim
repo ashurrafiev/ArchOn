@@ -1,5 +1,5 @@
 
-#aliaspk "uk.ac.ncl.cs.prime.sim.arch.modules"
+#aliaspk "ncl.cs.prime.archon.arch.modules"
 
 #assign alu0 ".IntAlu"
 #assign alu1 ".IntAlu"

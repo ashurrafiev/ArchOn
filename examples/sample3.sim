@@ -1,16 +1,16 @@
 
-#aliaspk "uk.ac.ncl.cs.prime.sim.arch.modules"
+#aliaspk "ncl.cs.prime.archon.arch.modules"
 
 #assign c ".IntReg"
 
-#archon A "sample.sim" #step
-#archon B "sample.sim" #step
+#archon A "examples/sample.sim"
+#archon B "examples/sample.sim"
 
 #print "RUN"
 
 #init c 5
-//A.c = c
-//B.c = c
+A.c = c
+B.c = c
 !
 
 #init c 10

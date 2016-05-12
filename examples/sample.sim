@@ -1,12 +1,12 @@
 
-#aliaspk "uk.ac.ncl.cs.prime.sim.arch.modules"
+#aliaspk "ncl.cs.prime.archon.arch.modules"
 
 #assign alu0 ".IntAlu"
 #assign alu1 ".IntAlu"
 #assign r0 ".IntReg"
 
-//#extern_in c alu1
-//#extern_out n alu0.out
+#extern_in c alu1
+#extern_out n alu0.out
 
 #init alu0 1
 #init r0 1

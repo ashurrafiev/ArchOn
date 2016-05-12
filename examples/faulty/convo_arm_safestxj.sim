@@ -1,5 +1,5 @@
 
-#aliaspk "uk.ac.ncl.cs.prime.sim.arch.modules.arm"
+#aliaspk "ncl.cs.prime.archon.arch.modules.arm"
 
 //#estim ".ArmEstimation"
 
