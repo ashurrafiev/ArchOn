@@ -1,0 +1,5 @@
+/bin/
+
+# Compiled ArchOn bytecode and line-mapping
+*.sim.bin
+*.sim.map

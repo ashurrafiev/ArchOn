@@ -1,0 +1,303 @@
+
+#aliaspk "uk.ac.ncl.cs.prime.sim.arch.modules.mc51"
+
+//#estim ".Estimate"
+
+#assign ADDR_A ".Const"
+#init ADDR_A 0
+#assign ADDR_R0 ".Const"
+#init ADDR_R0 1
+#assign ADDR_R1 ".Const"
+#init ADDR_R1 2
+#assign ONE ".Const"
+#init ONE 1
+
+#assign pciu ".Adder"
+	pciu(add)
+	pciu.y = ONE
+	#init pciu 0
+
+#assign ifu ".ROM"
+
+#assign alu_addr_reg ".Reg"
+#assign alu_data_reg ".Reg"
+#assign alu_temp_reg ".Reg"
+#assign alu_adder ".Adder"
+
+#assign mau ".RAM"
+
+//------------------------------------------------
+// MOV R1, #10
+
+	pciu = pciu
+	!
+	pciu =X
+	
+	ifu = pciu
+	!
+	ifu =X
+	#init ifu 10
+	
+	pciu = pciu
+	alu_data_reg = ifu
+	alu_addr_reg = ADDR_R1
+	!
+	pciu =X
+	alu_data_reg =X
+	alu_addr_reg =X
+	
+	ifu = pciu
+	mau(write)
+	mau.addr = alu_addr_reg
+	mau.data = alu_data_reg
+	!
+	ifu =X
+	mau.addr =X
+	mau.data =X
+	
+//------------------------------------------------
+// MOV R0, #1
+
+	pciu = pciu
+	!
+	pciu =X
+	
+	ifu = pciu
+	!
+	ifu =X
+	#init ifu 1
+	
+	pciu = pciu
+	alu_data_reg = ifu
+	alu_addr_reg = ADDR_R0
+	!
+	pciu =X
+	alu_data_reg =X
+	alu_addr_reg =X
+	
+	ifu = pciu
+	mau(write)
+	mau.addr = alu_addr_reg
+	mau.data = alu_data_reg
+	!
+	ifu =X
+	mau.addr =X
+	mau.data =X
+
+//------------------------------------------------
+// MOV A, R0
+
+	alu_addr_reg = ADDR_R0
+	!
+	alu_addr_reg =X
+	
+	mau(read)
+	mau.addr = alu_addr_reg
+	!
+	mau.addr =X
+	
+	pciu = pciu
+	alu_addr_reg = ADDR_A
+	alu_data_reg = mau.data
+	// update_psw
+	!
+	pciu =X
+	alu_addr_reg =X
+	alu_data_reg =X
+	
+	ifu = pciu
+	mau(write)
+	mau.addr = alu_addr_reg
+	mau.data = alu_data_reg
+	!
+	ifu =X
+	mau.addr =X
+	mau.data =X
+
+//------------------------------------------------
+// Loop:
+
+@Loop
+
+// #estprint
+
+//------------------------------------------------
+// ADD A, R0
+
+	alu_addr_reg = ADDR_A
+	!
+	alu_addr_reg =X
+	
+	mau(read)
+	mau.addr = alu_addr_reg
+	!
+	mau.addr =X
+	
+	alu_addr_reg = ADDR_R0
+	alu_temp_reg = mau.data
+	!
+	alu_addr_reg =X
+	alu_temp_reg =X
+	
+	mau(read)
+	mau.addr = alu_addr_reg
+	!
+	mau.addr =X
+	
+	alu_adder(add)
+	alu_adder.x = mau.data
+	alu_adder.y = alu_temp_reg
+	!
+	alu_adder.x =X
+	alu_adder.y =X
+	
+	pciu = pciu
+	alu_data_reg = alu_adder
+	alu_addr_reg = ADDR_A
+	!
+	pciu =X
+	alu_data_reg =X
+	alu_addr_reg =X
+	
+	ifu = pciu
+	mau(write)
+	mau.addr = alu_addr_reg
+	mau.data = alu_data_reg
+	!
+	ifu =X
+	mau.addr =X
+	mau.data =X
+	
+//------------------------------------------------
+// XCH A, R0
+
+	alu_addr_reg = ADDR_R0
+	!
+	alu_addr_reg =X
+	
+	mau(read)
+	mau.addr = alu_addr_reg
+	!
+	mau.addr =X
+	
+	alu_addr_reg = ADDR_A
+	alu_data_reg = mau.data
+	!
+	alu_addr_reg =X
+	alu_data_reg =X
+	
+	mau(read)
+	mau.addr = alu_addr_reg
+	!
+	mau.addr =X
+	
+	alu_temp_reg = mau.data
+	!
+	alu_temp_reg =X
+	
+	mau(write)
+	mau.addr = alu_addr_reg
+	mau.data = alu_data_reg
+	!
+	mau.addr =X
+	mau.data =X
+	
+	pciu = pciu
+	alu_data_reg = alu_temp_reg
+	alu_addr_reg = ADDR_R0
+	!
+	pciu =X
+	alu_data_reg =X
+	alu_addr_reg =X
+	
+#print "R0 = " alu_data_reg
+	
+	ifu = pciu
+	mau(write)
+	mau.addr = alu_addr_reg
+	mau.data = alu_data_reg
+	!
+	ifu =X
+	mau.addr =X
+	mau.data =X
+
+//------------------------------------------------
+// DJNZ R1, Loop
+	
+	alu_addr_reg = ADDR_R1
+	!
+	alu_addr_reg =X
+	
+	mau(read)
+	mau.addr = alu_addr_reg
+	!
+	mau.addr =X
+	
+	alu_adder(sub)
+	alu_adder.x = mau.data
+	alu_adder.y = ONE
+	!
+	alu_adder.x =X
+	alu_adder.y =X
+	
+	pciu = pciu
+	alu_data_reg = alu_adder
+	!
+	pciu =X
+	alu_data_reg =X
+	
+#print "    R1 = " alu_data_reg	
+	
+	[alu_adder.z] !jump @Djnz_Z
+	
+	ifu = pciu
+	mau(write)
+	mau.addr = alu_addr_reg
+	mau.data = alu_data_reg
+	!
+	ifu =X
+	#init ifu -4 // address offset
+	mau.addr =X
+	mau.data =X
+	
+	alu_adder(add)
+	alu_adder.x = pciu
+	alu_adder.y = ifu
+	!
+	alu_adder.x =X
+	alu_adder.y =X
+	
+	pciu(test)
+	pciu = alu_adder
+	!
+	pciu(add)
+	pciu =X
+	
+	ifu = pciu
+	!
+	ifu =X
+	
+	!jump @Loop
+	
+@Djnz_Z
+
+	mau(write)
+	mau.addr = alu_addr_reg
+	mau.data = alu_data_reg
+	!
+	mau.addr =X
+	mau.data =X
+	
+	pciu = pciu
+	!
+	pciu =X
+	
+	ifu = pciu
+	!
+	ifu =X
+	
+//------------------------------------------------
+
+#estprint
+!stop
+	

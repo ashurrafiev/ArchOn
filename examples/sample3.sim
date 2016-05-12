@@ -1,0 +1,22 @@
+
+#aliaspk "uk.ac.ncl.cs.prime.sim.arch.modules"
+
+#assign c ".IntReg"
+
+#archon A "sample.sim" #step
+#archon B "sample.sim" #step
+
+#print "RUN"
+
+#init c 5
+//A.c = c
+//B.c = c
+!
+
+#init c 10
+!
+
+#print "Result: " A.n
+
+!stop
+

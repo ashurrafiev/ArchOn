@@ -1,0 +1,52 @@
+
+#aliaspk "uk.ac.ncl.cs.prime.sim.arch.modules"
+
+#assign alu0 ".IntAlu"
+#assign alu1 ".IntAlu"
+#assign ra ".IntReg"
+#assign rb ".IntReg"
+
+#init ra 21
+#init rb 8
+
+	alu0(sub)
+	alu1(sub)
+	
+@Loop
+	#print "a=" ra ", b=" rb
+	
+	alu0.x = ra
+	alu0.y = rb
+	!
+	alu0.x =X
+	alu0.y =X
+	[alu0.z] !jump @Stop
+	[alu0.s] !jump @G2
+
+	alu1.x = ra
+	alu1.y = rb
+	!
+	alu1.x =X
+	alu1.y =X
+	
+	ra = alu1
+	!
+	ra =X
+	!jump @Loop
+	
+@G2
+
+	alu1.x = rb
+	alu1.y = ra
+	!
+	alu1.x =X
+	alu1.y =X
+	
+	rb = alu1
+	!
+	rb =X
+	!jump @Loop
+
+@Stop
+	#print "Done."
+	!stop

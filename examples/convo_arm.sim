@@ -1,0 +1,351 @@
+
+#aliaspk "uk.ac.ncl.cs.prime.sim.arch.modules.arm"
+
+//#estim ".ArmEstimation"
+
+/*
+INIT:
+ -- Resource access counter --
+  |  alu-mov:1  |  imm:4  |  reg:5  |  alu-add:4  |  sh:1
+ -- Platform time: 18 (28 no pipe) --
+ LOOP:
+ -- Resource access counter --
+  |  alu-mov:7  |  imm:33  |  mmu-write:1  |  alu-add:38  |  reg:70  |  alu-sub:3  |  mmu-read:18  |  mul:9  |  sh:9  |  alu-subs:13
+ -- Platform time: 327 (588 no pipe) --
+ */
+ 
+#assign MATRIX_PTR ".Const"
+#init MATRIX_PTR 0
+#assign IMAGE_PTR ".Const"
+#init IMAGE_PTR 262144
+#assign OUTPUT_PTR ".Const"
+#init OUTPUT_PTR 524288
+
+#assign IMAGE_WIDTH ".Const"
+#init IMAGE_WIDTH 256
+#assign IMAGE_WIDTH4 ".Const"
+#init IMAGE_WIDTH4 1024
+#assign INT_SIZE ".Const"
+#init INT_SIZE 4
+#assign MUL_256 ".Const" // IMAGE_WIDTH
+#init MUL_256 8
+#assign MUL_4 ".Const" // INT_SIZE
+#init MUL_4 2
+#assign ZERO ".Const"
+#init ZERO 0
+#assign ONE ".Const"
+#init ONE 1
+#assign TWO ".Const"
+#init TWO 2
+#assign THREE ".Const"
+#init THREE 3
+
+#assign alu ".Alu"
+#assign mul ".Multiplier"
+#assign immed ".ImmediateDataDecoder"
+#assign shift ".OperandShifter"
+#assign offs ".Alu"
+#assign mmu ".Mmu"
+
+#assign r0 ".Reg"
+#assign r1 ".Reg"
+#assign r2 ".Reg"
+#assign r3 ".Reg"
+#assign r4 ".Reg"
+#assign r5 ".Reg"
+#assign r6 ".Reg"
+#assign r7 ".Reg"
+#assign r8 ".Reg"
+#assign r9 ".Reg"
+#assign r10 ".Reg"
+#assign r11 ".Reg"
+
+/*
+image_width = #256
+const convm[] = #0
+const image[] = #1024
+const out[] = #2048
+in offs r0
+in span r1
+iptr r2
+optr r3
+cptr r4
+d r5
+dx r6
+dy r7
+res r8
+a r9
+b r10
+*/
+
+#param 0 r0 0
+#param 1 r1 256
+
+//------------------------------------------------
+// ADD iptr(r2), offs(r0), image(#1024)
+immed = IMAGE_PTR 
+!gox
+alu(add)
+alu.n = r0
+alu.m = immed
+!gox
+r2 = alu
+!gox
+
+//------------------------------------------------
+// ADD optr(r3), offs(r0), out(#2048)
+immed = OUTPUT_PTR 
+!gox
+alu(add)
+alu.n = r0
+alu.m = immed
+!gox
+r3 = alu
+!gox
+
+//------------------------------------------------
+// ADD optr(r3), optr(r3), #1024
+immed = IMAGE_WIDTH4 
+!gox
+alu(add)
+alu.n = r3
+alu.m = immed
+!gox
+r3 = alu
+!gox
+
+//------------------------------------------------
+// ADD optr(r3), optr(r3), #4
+immed = INT_SIZE 
+!gox
+alu(add)
+alu.n = r3
+alu.m = immed
+!gox
+r3 = alu
+!gox
+
+//------------------------------------------------
+// MOV span(r1), span(r1), LSL #8 ; mul #256
+shift.m = r1
+shift.shift = MUL_256 
+!gox
+alu(mov)
+alu.m = shift
+!gox
+r1 = alu
+!gox
+
+//#estprint
+
+//------------------------------------------------
+// Pixel:
+@Pixel
+
+//------------------------------------------------
+// MOV cptr(r4), #0
+immed = ZERO 
+!gox
+alu(mov)
+alu.m = immed
+!gox
+r4 = alu
+!gox
+
+//------------------------------------------------
+// MOV d(r5), #0
+immed = ZERO 
+!gox
+alu(mov)
+alu.m = immed
+!gox
+r5 = alu
+!gox
+
+//------------------------------------------------
+// MOV dy(r7), #3
+immed = THREE 
+!gox
+alu(mov)
+alu.m = immed
+!gox
+r7 = alu
+!gox
+
+//------------------------------------------------
+// MOV res(r8), #0
+immed = ZERO 
+!gox
+alu(mov)
+alu.m = immed
+!gox
+r8 = alu
+!gox
+
+//------------------------------------------------
+// LoopDy:
+@LoopDy
+
+//------------------------------------------------
+// MOV dx(r6), #3
+immed = THREE 
+!gox
+alu(mov)
+alu.m = immed
+!gox
+r6 = alu
+!gox
+
+//------------------------------------------------
+// LoopDx:
+@LoopDx
+
+//------------------------------------------------
+// LDR a(r9), [cptr(r4)], #4
+mmu(read)
+mmu.addr = r4
+!gox
+r9 = mmu
+!gox
+offs(add)
+offs.n = r4
+offs.m = INT_SIZE
+!gox
+r4 = offs
+!gox
+
+//------------------------------------------------
+// LDR b(r10), [iptr(r2), d(r5), LSL #2]
+shift.m = r5
+shift.shift = MUL_4 
+!gox
+offs(add)
+offs.n = r2
+offs.m = shift
+!gox
+mmu(read)
+mmu.addr = offs
+!gox
+r10 = mmu
+!gox
+
+//------------------------------------------------
+// MLA res(r8), a(r9), b(r10), res(r8)
+mul.n = r9
+mul.m = r10
+!gox
+alu(add)
+alu.n = mul
+alu.m = r8
+!gox
+r8 = alu
+!gox
+
+//------------------------------------------------
+// SUBS dx(r6), dx(r6), #1
+immed = ONE
+!gox
+alu(subs)
+alu.n = r6
+alu.m = immed
+!gox
+r6 = alu
+!gox
+
+//------------------------------------------------
+// ADDNE d(r5), d(r5), #1
+[alu.z] !jump @ADDNE_skip
+immed = ONE
+!gox
+alu(add)
+alu.n = r5
+alu.m = immed
+!gox
+r5 = alu
+!gox
+@ADDNE_skip
+
+//------------------------------------------------
+// BNE LoopDx
+[^alu.z] !jump @LoopDx
+
+//------------------------------------------------
+// ADD d(r5), d(r5), #256
+immed = IMAGE_WIDTH
+!gox
+alu(add)
+alu.n = r5
+alu.m = immed
+!gox
+r5 = alu
+!gox
+
+//------------------------------------------------
+// SUB d(r5), d(r5), #2
+immed = TWO
+!gox
+alu(sub)
+alu.n = r5
+alu.m = immed
+!gox
+r5 = alu
+!gox
+
+//------------------------------------------------
+// SUBS dy(r7), dy(r7), #1
+immed = ONE
+!gox
+alu(subs)
+alu.n = r7
+alu.m = immed
+!gox
+r7 = alu
+!gox
+
+//------------------------------------------------
+// BNE LoopDy
+[^alu.z] !jump @LoopDy
+
+//------------------------------------------------
+// STR res(r8), [optr(r3)], #4
+mmu(write)
+mmu.n = r8
+mmu.addr = r3
+!gox
+offs(add)
+offs.n = r3
+offs.m = INT_SIZE
+!gox
+r3 = offs
+!gox
+
+//------------------------------------------------
+// ADD iptr(r2), iptr(r2), #4
+immed = INT_SIZE
+!gox
+alu(add)
+alu.n = r2
+alu.m = immed
+!gox
+r2 = alu
+!gox
+
+//------------------------------------------------
+// SUBS span(r1), span(r1), #1
+immed = ONE
+!gox
+alu(subs)
+alu.n = r1
+alu.m = immed
+!gox
+r1 = alu
+!gox
+
+//------------------------------------------------
+// BNE Pixel
+//#estprint
+[^alu.z] !jump @Pixel
+
+//#estprint
+
+!stop

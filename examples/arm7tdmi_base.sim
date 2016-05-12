@@ -1,0 +1,244 @@
+//------------------------------------------------
+// Important!
+// This file contains ArchOn templates for ARM instructions (ARM7 TDMI)
+//------------------------------------------------
+
+#assign alu ".Alu"
+#assign mul ".Multiplier"
+#assign immed ".ImmediateDataDecoder"
+#assign shift ".OperandShifter"
+#assign offs ".Alu"
+#assign mmu ".Mmu"
+
+#assign r0 ".Reg"
+#assign r1 ".Reg"
+#assign r2 ".Reg"
+#assign r3 ".Reg"
+#assign r4 ".Reg"
+#assign r5 ".Reg"
+#assign r6 ".Reg"
+#assign r7 ".Reg"
+#assign r8 ".Reg"
+#assign r9 ".Reg"
+#assign r10 ".Reg"
+#assign r11 ".Reg"
+// r13 SP (stack)
+// r14 LR (link - return address)
+// r15 PC
+
+//------------------------------------------------
+// (condition)
+// + EQ, NE, MI, PL
+
+[^flag] #jump @OPINDEX_skip
+// operation...
+@OPINDEX_skip
+
+//------------------------------------------------
+// ADC => Instr (lowercase)
+// ADD
+// AND
+// BIC
+// CMN
+// CMP
+// EOR
+// MOV
+// MVN
+// ORR
+// RSB
+// RSC
+// SBC
+// SUB
+// TEQ
+// TST
+// +...S
+
+// -- if Decode Op2: #const
+immed = /* const */
+// Op2 = immed
+!gox
+// -- if Decode Op2: Rm
+// Op2 = Rm
+// -- if Decode Op2: Rm, ShOp, #const
+shift(/* ShOp */)
+shift.m = /* Rm */
+shift.shift = /* const */
+!gox
+// Op2 = shift
+// -- endif
+alu(/* Instr */)
+alu.n = /* Rn */
+alu.m = /* Op2 */
+!gox
+/* Rd */ = alu
+!gox
+
+
+//------------------------------------------------
+// B - PC = addr
+
+#jump @Label
+
+//------------------------------------------------
+// BL - RL = PC, PC = addr
+
+!??
+#jump @Label
+
+//------------------------------------------------
+// BX - PC = Rn
+
+!??
+
+//------------------------------------------------
+// CDP - coprocessor, not supported
+// LDC
+// MCR
+// MRC
+// STC
+
+//------------------------------------------------
+// LDM - load multiple
+// STM - store multiple
+
+!??
+
+//------------------------------------------------
+// LDR
+// LDRB - (single byte) not supported by current Mmu
+
+// -- if Decode addr: [#const]
+// addr = const
+
+// -- if Decode addr: [Rn]
+// addr = Rn
+
+// -- if Decode addr: [Rn, #const]
+alu(add)
+alu.n = /* Rn */
+alu.m = /* const */
+!gox
+// ---- write back?
+/* Rn */ = alu
+!gox
+// ----
+// addr = alu
+
+// -- if Decode addr: [Rn, (add/sub)Rm]
+alu(/* Op */)
+alu.n = /* Rn */
+alu.m = /* Rm */
+!gox
+// ---- write back?
+/* Rn */ = alu
+!gox
+// ----
+// addr = alu
+
+// -- if Decode addr: [Rn, (add/sub)Rm, ShOp #const]
+shift(/* ShOp */)
+shift.m = /* Rm */
+shift.shift = /* const */
+!gox
+alu(/* Op */)
+alu.n = /* Rn */
+alu.m = shift
+!gox
+// ---- write back?
+/* Rn */ = alu
+!gox
+// ----
+// addr = alu
+
+// -- else (post-index)
+// addr = Rn
+
+// -- end if
+mmu(read)
+mmu.addr = /* addr */
+!gox
+/* Rd */ = mmu
+!gox
+
+// -- if Post-index: [Rn], #const
+alu(add)
+alu.n = /* Rn */
+alu.m = /* const */
+!gox
+/* Rn */ = alu
+!gox
+
+// -- if Post-index: [Rn], (add/sub)Rm
+alu(/* Op */)
+alu.n = /* Rn */
+alu.m = /* Rm */
+!gox
+/* Rn */ = alu
+!gox
+
+// -- if Post-index: [Rn], (add/sub)Rm, ShOp #const
+shift(/* ShOp */)
+shift.m = /* Rm */
+shift.shift = /* const */
+!gox
+alu(/* Op */)
+alu.n = /* Rn */
+alu.m = shift
+!gox
+/* Rn */ = alu
+!gox
+
+//------------------------------------------------
+// MLA
+
+mul.n = /* Rm */
+mul.m = /* Rs */
+!gox
+alu(add)
+alu.n = mul
+alu.m = /* Rn */
+!gox
+/* Rd */ = alu
+!gox
+
+//------------------------------------------------
+// MRS - Rn = PSR (status reg)
+// MSR - PSR = Rn
+
+!??
+
+//------------------------------------------------
+// MUL
+
+mul.n = /* Rm */
+mul.m = /* Rs */
+!gox
+/* Rd */ = mul
+!gox
+
+//------------------------------------------------
+// STR
+// STRB - (single byte) not supported by current Mmu 
+
+// Decode addr (LDR)
+mmu(write)
+mmu.n = /* Rd */
+mmu.addr = /* addr */
+!gox
+// Post assign (LDR)
+
+//------------------------------------------------
+// SWI - software interrupt, not supprted
+
+//------------------------------------------------
+// SWP - Rd = [Rn], [Rn] = Rm
+
+mmu(read)
+mmu.addr = /* Rn */
+!gox
+/* Rd */ = mmu
+mmu(write)
+mmu.addr = /* Rn */
+mmu.n = /* Rm */
+!gox
+

@@ -1,0 +1,31 @@
+
+#aliaspk "uk.ac.ncl.cs.prime.sim.arch.modules"
+
+#assign alu0 ".IntAlu"
+#assign alu1 ".IntAlu"
+#assign r0 ".IntReg"
+
+//#extern_in c alu1
+//#extern_out n alu0.out
+
+#init alu0 1
+#init r0 1
+
+!begin
+
+#init alu1 8
+
+	alu0(add)
+	alu0.x = alu0
+	alu0.y = r0
+	r0 = alu0
+	
+	alu1(dec)
+	alu1.x = alu1
+	
+@Loop
+	#print "n=" alu0.out ", c=" alu1.out
+	!
+	[^alu1.z]  !jump @Loop
+	
+	!stop
