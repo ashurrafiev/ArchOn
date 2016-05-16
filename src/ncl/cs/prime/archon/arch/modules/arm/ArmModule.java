@@ -7,11 +7,8 @@ public abstract class ArmModule extends Module {
 
 	protected abstract String getResourceName();
 	
-	public abstract long getDuration();
-	
 	@Override
 	protected void update() {
-		addTime(getDuration());
 	}
 	
 	@Override

@@ -35,8 +35,8 @@ public class Multiplier extends ArmModule {
 	}
 
 	@Override
-	public long getDuration() {
-		return TIME;
+	protected void initDelays() {
+		defaultDelay = TIME;
 	}
 	
 	@Override

@@ -34,8 +34,8 @@ public class ImmediateDataDecoder extends ArmModule {
 	}
 	
 	@Override
-	public long getDuration() {
-		return TIME;
+	protected void initDelays() {
+		defaultDelay = TIME;
 	}
 	
 	@Override

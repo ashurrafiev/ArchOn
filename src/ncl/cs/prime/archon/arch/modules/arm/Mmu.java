@@ -115,10 +115,10 @@ public class Mmu extends ArmModule {
 	protected String getResourceName() {
 		return "mmu-"+CONFIG_NAMES[config];
 	}
-	
+
 	@Override
-	public long getDuration() {
-		return config==0 ? TIME_READ : TIME_WRITE;
+	protected void initDelays() {
+		delays = new long[] {TIME_READ, TIME_WRITE};
 	}
 	
 	@Override

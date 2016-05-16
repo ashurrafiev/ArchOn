@@ -12,7 +12,7 @@ public class TestSim {
 	private static void simulate(CodeExecutor exec) {
 		System.out.println("Starting simulation\n\n");
 		exec.execute(null, ExecMode.normal);
-		System.out.println("\n\nSimulation finished");
+		System.out.println("\n\nSimulation finished, arch sync @"+exec.getArch().syncTime());
 
 	}
 	

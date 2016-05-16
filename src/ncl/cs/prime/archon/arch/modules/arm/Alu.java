@@ -89,8 +89,8 @@ public class Alu extends ArmModule {
 	}
 	
 	@Override
-	public long getDuration() {
-		return CONFIG_TIMES[config%16];
+	protected void initDelays() {
+		delays = CONFIG_TIMES;
 	}
 	
 	@Override

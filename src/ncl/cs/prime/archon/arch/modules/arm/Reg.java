@@ -34,8 +34,8 @@ public class Reg extends ArmModule {
 	}
 
 	@Override
-	public long getDuration() {
-		return TIME;
+	protected void initDelays() {
+		defaultDelay = TIME;
 	}
 	
 	@Override

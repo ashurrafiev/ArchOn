@@ -1,7 +1,7 @@
 
 #aliaspk "ncl.cs.prime.archon.arch.modules.arm"
 
-//#estim ".ArmEstimation"
+#estim ".ArmEstimation"
 
 /*
 INIT:
@@ -346,6 +346,6 @@ r1 = alu
 //#estprint
 [^alu.z] !jump @Pixel
 
-//#estprint
+#estprint
 
 !stop

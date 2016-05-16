@@ -15,7 +15,11 @@ public abstract class Module {
 	private InPort<?>[] inputs;
 	private OutPort<?>[] outputs;
 	protected FlagOutPort[] flags;
-	public int config; // TODO config
+	
+	protected long delays[] = null;
+	protected long defaultDelay = 0L;
+
+	public int config;
 	
 	protected abstract InPort<?>[] initInputs();
 	protected abstract OutPort<?>[] initOutputs();
@@ -25,6 +29,10 @@ public abstract class Module {
 		inputs = initInputs();
 		outputs = initOutputs();
 		flags = initFlags();
+		initDelays();
+	}
+	
+	protected void initDelays() {
 	}
 	
 	protected FlagOutPort[] initFlags() {
@@ -52,8 +60,12 @@ public abstract class Module {
 		return time;
 	}
 	
-	protected void addTime(long t) {
-		time += t;
+	protected long getDelay() {
+		return (delays==null || config<0 || config>=delays.length) ? defaultDelay : delays[config];
+	}
+	
+	protected void addDelay() {
+		time += getDelay();
 	}
 	
 	public void invalidate() {
@@ -73,6 +85,7 @@ public abstract class Module {
 			estimate(est, invalidated);
 		if(invalidated) {
 			invalidated = false;
+			addDelay();
 			update();
 		}
 	}
