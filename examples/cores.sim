@@ -1,0 +1,24 @@
+
+#aliaspk "ncl.cs.prime.archon.arch.modules.hicore"
+
+#assign app0 ".App"
+#assign core0 ".Core"
+#assign mem ".Mem"
+
+app0.ack = core0.done
+core0.op = app0.op
+core0.ack = mem.done
+mem.req = core0.mem_req
+
+#init app0.c 8100
+#init app0.op 0
+#init core0.done 1
+#init mem.done 0
+
+@loop
+!
+#print "State(" app0.c ") " app0.op "; " core0.done ", " core0.mem_req "; " mem.done
+[^app0.done] #jump @loop
+
+!stop
+
