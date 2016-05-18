@@ -89,12 +89,7 @@ public class Alu extends ArmModule {
 	}
 	
 	@Override
-	protected void initDelays() {
-		delays = CONFIG_TIMES;
-	}
-	
-	@Override
-	protected void update() {
+	protected long update() {
 		long res = calc(config%16, (long) n.getValue(), (long) m.getValue());
 		int intRes = (int) res;
 		if(config/16>0 || (config>=8 && config<12)) {
@@ -105,7 +100,7 @@ public class Alu extends ArmModule {
 		if(config<8 || config>=12) {
 			d.value = intRes;
 		}
-		super.update();
+		return CONFIG_TIMES[config%16];
 	}
 
 }

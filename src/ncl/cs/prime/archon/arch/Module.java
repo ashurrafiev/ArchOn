@@ -16,23 +16,16 @@ public abstract class Module {
 	private OutPort<?>[] outputs;
 	protected FlagOutPort[] flags;
 	
-	protected long delays[] = null;
-	protected long defaultDelay = 0L;
-
 	public int config;
 	
 	protected abstract InPort<?>[] initInputs();
 	protected abstract OutPort<?>[] initOutputs();
-	protected abstract void update();
+	protected abstract long update();
 	
 	public void initPorts() {
 		inputs = initInputs();
 		outputs = initOutputs();
 		flags = initFlags();
-		initDelays();
-	}
-	
-	protected void initDelays() {
 	}
 	
 	protected FlagOutPort[] initFlags() {
@@ -60,14 +53,6 @@ public abstract class Module {
 		return time;
 	}
 	
-	protected long getDelay() {
-		return (delays==null || config<0 || config>=delays.length) ? defaultDelay : delays[config];
-	}
-	
-	protected void addDelay() {
-		time += getDelay();
-	}
-	
 	public void invalidate() {
 		invalidated = true;
 	}
@@ -85,8 +70,7 @@ public abstract class Module {
 			estimate(est, invalidated);
 		if(invalidated) {
 			invalidated = false;
-			addDelay();
-			update();
+			time += update();
 		}
 	}
 	

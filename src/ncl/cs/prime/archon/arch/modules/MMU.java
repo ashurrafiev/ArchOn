@@ -35,7 +35,7 @@ public class MMU<T, U> extends Module {
 	}
 
 	@Override
-	protected void update() {
+	protected long update() {
 		if (config==0) { // read mode
 			T addr = address.getValue();
 			out.value = memory.get(addr);
@@ -44,6 +44,7 @@ public class MMU<T, U> extends Module {
 			U val = data.getValue();
 			memory.put(addr, val);
 		}
+		return 0L;
 	}
 
 }

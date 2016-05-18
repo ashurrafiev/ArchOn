@@ -18,6 +18,13 @@ public class InPort<T> {
 		connection = (OutPort<T>) p;
 	}
 	
+	public Module getLinkedModule() {
+		if(connection==null)
+			return null;
+		else
+			return connection.getModule();
+	}
+	
 	@SuppressWarnings("unchecked")
 	public void connect(OutPort<?> p, FlagOutPort cond, boolean neg) {
 		connection = (OutPort<T>) p;

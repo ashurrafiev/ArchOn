@@ -67,9 +67,10 @@ public class Adder extends Module {
 	}
 	
 	@Override
-	protected void update() {
+	protected long update() {
 		out.value = calc(config, x.getValue(), y.getValue());
 		z.value = (out.value==0);
+		return (long)(TIME * 1000.0);
 	}
 
 }

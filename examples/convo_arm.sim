@@ -2,6 +2,7 @@
 #aliaspk "ncl.cs.prime.archon.arch.modules.arm"
 
 #estim ".ArmEstimation"
+#syncall
 
 /*
 INIT:

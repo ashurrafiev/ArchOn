@@ -45,14 +45,9 @@ public class OperandShifter extends ArmModule {
 	}
 
 	@Override
-	protected void initDelays() {
-		defaultDelay = TIME;
-	}
-	
-	@Override
-	protected void update() {
+	protected long update() {
 		d.value = calc(config, m.getValue(), shift.getValue());
-		super.update();
+		return TIME;
 	}
 
 }

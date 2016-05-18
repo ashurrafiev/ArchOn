@@ -69,7 +69,7 @@ public class ArchonModule extends Module {
 	}
 	
 	@Override
-	protected void update() {
+	protected long update() {
 		if(decl!=null && decl.inputVars!=null) {
 			for(int i=0; i<decl.inputVars.length; i++) {
 				exec.getRouter().debugSetValue(decl.inputVars[i], inputs[i].getValue());
@@ -96,6 +96,7 @@ public class ArchonModule extends Module {
 				flags[i].value = ((Integer)exec.getRouter().debugGetValue(decl.outputVars[i]))!=0;
 			}
 		}
+		return 0L; // FIXME ArchOn module update delay
 	}
 	
 	public void finishInitialise() {

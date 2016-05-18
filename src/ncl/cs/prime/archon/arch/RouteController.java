@@ -6,6 +6,8 @@ public class RouteController {
 	private Architecture arch;
 	private Estimation est = null;
 	
+	public boolean syncNext = false;
+	
 	public RouteController(Architecture arch) {
 		this.arch = arch;
 	}
@@ -63,15 +65,13 @@ public class RouteController {
 		for(Module m : arch.modules) {
 			m.recompute(est);
 		}
-//		arch.syncTime();
+		if(syncNext)
+			arch.syncTime();
 		if(est!=null)
 			est.endCycle();
 	}
 	
 	public boolean next() {
-//		if(!pullData())
-//			return true;
-//			return false;
 		pullData();
 		recompute();
 		return true;

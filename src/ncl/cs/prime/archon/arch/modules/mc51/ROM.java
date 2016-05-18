@@ -38,8 +38,9 @@ public class ROM extends Module {
 	}
 	
 	@Override
-	protected void update() {
+	protected long update() {
 		// dummy
+		return (long)(TIME_READ * 1000.0);
 	}
 
 }

@@ -10,7 +10,9 @@ public interface Instructions {
 
 	public static final byte D_ESTIM = -8; // s:class
 	public static final byte D_EST_PRINT = -9; //
-	
+
+	public static final byte D_SYNC_ALL = -16; //
+
 	public static final byte I_UNLINK = 0; // i:dest
 	public static final byte I_LINK = 1; // i:dest i:src
 	public static final byte I_LINK_FLAG = 2; // i:dest i:src b:(src.)flag

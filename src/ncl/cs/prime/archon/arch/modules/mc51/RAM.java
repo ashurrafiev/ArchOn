@@ -47,13 +47,15 @@ public class RAM extends Module {
 	}
 	
 	@Override
-	protected void update() {
+	protected long update() {
 		if (config==0) { // read mode
 			out.value = memory[addr.getValue()];
+			return (long)(TIME_READ * 1000.0);
 		}
 		else { // write mode
 			memory[addr.getValue()] = in.getValue();
 			out.value = in.getValue();
+			return (long)(TIME_WRITE * 1000.0);
 		}
 	}
 

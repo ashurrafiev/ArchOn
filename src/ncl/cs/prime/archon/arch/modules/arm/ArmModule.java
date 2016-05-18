@@ -8,10 +8,6 @@ public abstract class ArmModule extends Module {
 	protected abstract String getResourceName();
 	
 	@Override
-	protected void update() {
-	}
-	
-	@Override
 	protected void estimate(Estimation est, boolean enabled) {
 		if(enabled)
 			((ArmEstimation) est).forModule(getResourceName());

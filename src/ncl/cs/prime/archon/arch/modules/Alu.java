@@ -44,8 +44,9 @@ public abstract class Alu<T> extends Module {
 	}
 	
 	@Override
-	protected void update() {
+	protected long update() {
 		out.value = calc(config, x.getValue(), y.getValue());
 		calcFlags(out.value);
+		return 0L;
 	}
 }

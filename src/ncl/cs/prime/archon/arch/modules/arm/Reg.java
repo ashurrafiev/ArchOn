@@ -34,14 +34,9 @@ public class Reg extends ArmModule {
 	}
 
 	@Override
-	protected void initDelays() {
-		defaultDelay = TIME;
-	}
-	
-	@Override
-	protected void update() {
+	protected long update() {
 		d.value = n.getValue();
-		super.update();
+		return TIME;
 	}
 
 }

@@ -35,14 +35,9 @@ public class Multiplier extends ArmModule {
 	}
 
 	@Override
-	protected void initDelays() {
-		defaultDelay = TIME;
-	}
-	
-	@Override
-	protected void update() {
+	protected long update() {
 		d.value = n.getValue() * m.getValue();
-		super.update();
+		return TIME;
 	}
 
 }

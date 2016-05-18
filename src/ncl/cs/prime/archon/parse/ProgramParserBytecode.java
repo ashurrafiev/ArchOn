@@ -457,7 +457,13 @@ public class ProgramParserBytecode extends BytecodeWriter implements Instruction
 			write(D_EST_PRINT);
 			next();	
 		}
-		
+
+		else if(s.equals("syncall")) {
+			regLineIndex();
+			write(D_SYNC_ALL);
+			next();	
+		}
+
 		else if(s.equals("nop")) {
 			regLineIndex();
 			write(I_NOP);

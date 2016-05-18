@@ -25,7 +25,8 @@ public class Const extends Module {
 	}
 	
 	@Override
-	protected void update() {
+	protected long update() {
+		return 0L;
 	}
 
 }

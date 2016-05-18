@@ -171,6 +171,10 @@ public class CodeExecutor implements Instructions {
 					est.dump();
 				break;
 				
+			case D_SYNC_ALL:
+				router.syncNext = true;
+				break;
+				
 			case D_PRINT:
 				if(debug!=null)
 					debug.print(router.debugGetValue(ip.nextInt()));

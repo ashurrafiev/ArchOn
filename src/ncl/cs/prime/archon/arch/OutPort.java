@@ -10,6 +10,10 @@ public class OutPort<T> {
 		value = init;
 	}
 	
+	public Module getModule() {
+		return module;
+	}
+	
 	public long getTime() {
 		return module.getTime();
 	}

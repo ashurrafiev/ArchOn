@@ -117,32 +117,27 @@ public class Mmu extends ArmModule {
 	}
 
 	@Override
-	protected void initDelays() {
-		delays = new long[] {TIME_READ, TIME_WRITE};
-	}
-	
-	@Override
-	protected void update() {
+	protected long update() {
 		int a = addr.getValue();
 		if(a%4>0) {
 			throw new UnsupportedOperationException("Memory address not aligned ("+a+").");
 		}
 		a >>= 2;
+		long delay;
 		if (config==0) { // read mode
 			out.value = sharedMemory[a];
+			delay = TIME_READ;
 		}
 		else { // write mode
 			sharedMemory[a] = in.getValue();
 			out.value = in.getValue();
+			delay = TIME_WRITE;
 		}
 		if(config==0 && criticalRead || config==1 && criticalWrite) {
 			syncTime(sharedTime);
-			super.update();
-			sharedTime = getTime();
+			sharedTime = getTime() + delay;
 		}
-		else {
-			super.update();
-		}
+		return delay;
 	}
 
 }

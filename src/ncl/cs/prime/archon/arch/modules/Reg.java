@@ -25,8 +25,9 @@ public class Reg<T> extends Module {
 	}
 
 	@Override
-	protected void update() {
+	protected long update() {
 		out.value = in.getValue();
+		return 0L;
 	}
 
 }
