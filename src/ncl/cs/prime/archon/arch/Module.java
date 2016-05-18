@@ -63,7 +63,7 @@ public abstract class Module {
 	public void recompute(Estimation est) {
 		if(inputs!=null) {
 			for(InPort<?> in : inputs)
-				if(in.isEnabled())
+				if(in.isEnabled() && in.hasData())
 					syncTime(in.getTime());
 		}
 		if(est!=null)

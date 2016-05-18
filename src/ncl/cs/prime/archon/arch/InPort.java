@@ -45,6 +45,10 @@ public class InPort<T> {
 			return true;
 	}
 	
+	public boolean hasData() {
+		return value!=null;
+	}
+	
 	public long getTime() {
 		return connection.getTime();
 	}

@@ -15,7 +15,7 @@ public class MasterNode extends Module {
 	
 	private InPort<Integer> req = new InPort<>(this);
 	private InPort<Integer> link = new InPort<>(this);
-	private OutPort<Integer> done = new OutPort<Integer>(this, 0);
+	private OutPort<Integer> done = new OutPort<Integer>(this, null);
 
 	@Override
 	protected InPort<?>[] initInputs() {
@@ -35,12 +35,12 @@ public class MasterNode extends Module {
 			bus.accept(config);
 		}
 		else {
-			done.value = Mem.REQ_NONE;
+			done.value = null; // Mem.REQ_NONE;
 		}
-		if(req.getValue()!=Mem.REQ_NONE) {
+		if(req.getValue()!=null && req.getValue()!=Mem.REQ_NONE) {
 			bus.send(config, req.getValue());
 		}
-		return 0L;
+		return 1L;
 	}
 
 }

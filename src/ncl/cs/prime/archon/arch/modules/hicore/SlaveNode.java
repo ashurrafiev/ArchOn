@@ -16,12 +16,12 @@ public class SlaveNode extends Module {
 	}	
 	
 	private InPort<Integer> ack = new InPort<>(this);
-	private OutPort<Integer> memReq = new OutPort<Integer>(this, 0);
-	private OutPort<Integer> link = new OutPort<Integer>(this, 0);
+	private OutPort<Integer> memReq = new OutPort<Integer>(this, null);
+	private OutPort<Integer> link = new OutPort<Integer>(this, null);
 
 	private int waiting = -1;
 	public int sender = -1;
-	public int msg;
+	public Integer msg;
 	
 	private class Packet {
 		public int sender;
@@ -56,7 +56,7 @@ public class SlaveNode extends Module {
 	protected long update() {
 		if(waiting>=0 && sender<0) {
 			msg = ack.getValue();
-			if(msg!=Mem.REQ_NONE) {
+			if(msg!=null && msg!=Mem.REQ_NONE) {
 				sender = waiting;
 				waiting = -1;
 			}
@@ -67,9 +67,9 @@ public class SlaveNode extends Module {
 			waiting = p.sender;
 		}
 		else {
-			memReq.value = Mem.REQ_NONE;
+			memReq.value = null; // Mem.REQ_NONE;
 		}
-		return 0L;
+		return 1L;
 	}
 
 }

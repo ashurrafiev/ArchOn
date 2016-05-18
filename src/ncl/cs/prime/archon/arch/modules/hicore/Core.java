@@ -15,8 +15,8 @@ public class Core extends Module {
 	
 	private InPort<Integer> ack = new InPort<>(this);
 	private InPort<Integer> op = new InPort<>(this);
-	private OutPort<Integer> done = new OutPort<Integer>(this, 0);
-	private OutPort<Integer> memReq = new OutPort<Integer>(this, 0);
+	private OutPort<Integer> done = new OutPort<Integer>(this, null);
+	private OutPort<Integer> memReq = new OutPort<Integer>(this, null);
 
 	@Override
 	protected InPort<?>[] initInputs() {
@@ -30,15 +30,15 @@ public class Core extends Module {
 	
 	@Override
 	protected long update() {
-		if(op.getValue()==App.OP_WAIT) {
+		if(op.getValue()==null || op.getValue()==App.OP_WAIT) {
 			done.value = ack.getValue();
-			memReq.value = Mem.REQ_NONE;
+			memReq.value = null; // Mem.REQ_NONE;
 			return 0L;
 		}
 		else if(op.getValue()==App.OP_CPU) {
 			// TODO add core power
 			done.value = 1;
-			memReq.value = Mem.REQ_NONE;
+			memReq.value = null; // Mem.REQ_NONE;
 			return 1L;
 		}
 		else {

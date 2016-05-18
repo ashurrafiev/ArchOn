@@ -40,9 +40,11 @@ mem.req = bus_mem.mem_req
 
 @loop
 !
+/*
 #print "State1(" app1.c ") " app1.op "; " core1.done ", " core1.mem_req "; " bus1.done 
 #print "State2(" app2.c ") " app2.op "; " core2.done ", " core2.mem_req "; " bus2.done 
 #print "StateMem " bus_mem.mem_req "; " mem.done
+*/
 [^app1.done] #jump @loop
 [^app2.done] #jump @loop
 

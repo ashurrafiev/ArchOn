@@ -13,14 +13,14 @@ public class Mem extends Module {
 		return d;
 	}	
 
-	private static final long TIME[] = {0L, 0L, 10L, 120L};
+	private static final long TIME[] = {0L, 0L, 1L, 100L};
 	
 	public static final int REQ_NONE = 0;
 	public static final int REQ_READ = 2;
 	public static final int REQ_WRITE = 3;
 
 	private InPort<Integer> req = new InPort<>(this);
-	private OutPort<Integer> done = new OutPort<Integer>(this, 0);
+	private OutPort<Integer> done = new OutPort<Integer>(this, null);
 
 	@Override
 	protected InPort<?>[] initInputs() {
@@ -35,7 +35,7 @@ public class Mem extends Module {
 	@Override
 	protected long update() {
 		done.value = req.getValue();
-		return TIME[done.value];
+		return done.value==null ? 0L : TIME[done.value];
 	}
 
 }

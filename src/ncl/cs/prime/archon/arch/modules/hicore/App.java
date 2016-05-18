@@ -26,7 +26,7 @@ public class App extends Module {
 	private static final int PROBABILITIES[] = {0, 4718597, 3342340, 65536};
 	
 	private InPort<Integer> ack = new InPort<>(this);
-	private OutPort<Integer> op = new OutPort<Integer>(this, 0);
+	private OutPort<Integer> op = new OutPort<Integer>(this, null);
 	private OutPort<Integer> counter = new OutPort<Integer>(this, -1);
 	protected FlagOutPort done = new FlagOutPort(this);
 	
@@ -47,7 +47,7 @@ public class App extends Module {
 	
 	@Override
 	protected long update() {
-		if(ack.getValue()!=0) {
+		if(ack.getValue()!=null && ack.getValue()!=0) {
 			if(counter.value>0)
 				counter.value--;
 			done.value = (counter.value==0);
@@ -56,7 +56,7 @@ public class App extends Module {
 			}
 		}
 		else
-			op.value = OP_WAIT;
+			op.value = null; // OP_WAIT;
 		return 0L;
 	}
 	
