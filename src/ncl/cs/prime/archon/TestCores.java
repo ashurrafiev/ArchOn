@@ -10,7 +10,9 @@ import ncl.cs.prime.archon.parse.ProgramParserBytecode;
 
 public class TestCores {
 
-	public static final int TOTAL_WORK = 8192;
+	public static int totalWork = 81920;
+	public static boolean privateCache = true;
+	public static int cacheMissPercent = 100;
 	
 	public static void createCode(File f, int n) {
 		try {
@@ -21,6 +23,8 @@ public class TestCores {
 			for(int i=1; i<=n; i++) {
 				out.printf("#assign app%d \".App\"\n", i);
 				out.printf("#assign core%d \".Core\"\n", i);
+				if(privateCache)
+					out.printf("#assign cache%d \".Cache\"\n", i);
 				out.printf("#assign bus%d \".MasterNode\"\n", i);
 			}
 
@@ -30,11 +34,23 @@ public class TestCores {
 			for(int i=1; i<=n; i++) {
 				out.printf("app%d.ack = core%d.done\n", i, i);
 				out.printf("core%d.op = app%d.op\n", i, i);
-				out.printf("core%d.ack = bus%d.done\n", i, i);
-				out.printf("bus%d(%d)\n", i, i);
-				out.printf("bus%d.req = core%d.mem_req\n", i, i);
+				
+				if(privateCache) {
+					out.printf("core%d.ack = cache%d.done\n", i, i);
+					out.printf("cache%d.req = core%d.mem_req\n", i, i);
+					out.printf("cache%d(%d)\n", i, cacheMissPercent);
+					out.printf("cache%d.mem_ack = bus%d.done\n", i, i);
+					out.printf("bus%d.req = cache%d.mem_req\n", i, i);
+					out.printf("bus%d(%d)\n", i, i);
+				}
+				else {
+					out.printf("core%d.ack = bus%d.done\n", i, i);
+					out.printf("bus%d.req = core%d.mem_req\n", i, i);
+					out.printf("bus%d(%d)\n", i, i);
+				}
+				
 				out.printf("bus%d.link = bus_mem.link\n", i);
-				out.printf("#init app%d.c %d\n", i, TOTAL_WORK/n);
+				out.printf("#init app%d.c %d\n", i, totalWork/n);
 				out.printf("#init core%d.done 1\n", i);
 			}
 
@@ -67,7 +83,7 @@ public class TestCores {
 	public static void simulate(File f) {
 		ProgramParserBytecode p = new ProgramParserBytecode();
 		if(p.compile(f, false)!=null) {
-			System.out.println("Done");
+//			System.out.println("Done");
 			f = new File(f.getAbsolutePath()+".bin");
 			f.deleteOnExit();
 			
@@ -75,9 +91,9 @@ public class TestCores {
 			try {
 				exec.getIP().loadCode(f);
 				
-				System.out.println("Starting simulation");
+//				System.out.println("Starting simulation");
 				exec.execute(null, ExecMode.normal);
-				System.out.println("Simulation finished, arch sync @"+exec.getArch().syncTime());
+				System.out.println("Simulation finished, arch sync:\t"+exec.getArch().syncTime());
 				
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -89,10 +105,22 @@ public class TestCores {
 	}
 	
 	public static void main(String[] args) {
+		for(int i=0; i<args.length; i++) {
+			if(args[i].equals("-w")) {
+				totalWork = Integer.parseInt(args[++i]);
+			}
+			else if(args[i].equals("-miss")) {
+				double miss = Double.parseDouble(args[++i]);
+				cacheMissPercent = (int) Math.round(miss * 100.0);
+			}
+		}
+		
+		System.out.printf("Requested workload: %d\nRequested cache miss rate: %d%%\n\n", totalWork, cacheMissPercent);
+		
 		File f = new File("test_cores.sim");
 		f.deleteOnExit();
 		for(int n=1; n<=256; n<<=1) {
-			System.out.printf("\n%d cores:\n", n);
+			System.out.printf("Cores:\t%d\t", n);
 			createCode(f, n);
 			simulate(f);
 		}

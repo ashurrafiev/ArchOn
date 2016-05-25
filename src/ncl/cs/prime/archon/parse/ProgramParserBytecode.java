@@ -856,7 +856,7 @@ public class ProgramParserBytecode extends BytecodeWriter implements Instruction
 	public boolean parse(File f) throws IOException {
 		reset();
 		tokeniser.start(f);
-		System.out.println("Parsing file "+f.getName());
+//		System.out.println("Parsing file "+f.getName());
 		return parse();
 	}
 	

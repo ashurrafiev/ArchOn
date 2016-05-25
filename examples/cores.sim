@@ -3,17 +3,21 @@
 
 #assign app0 ".App"
 #assign core0 ".Core"
+#assign cache0 ".Cache"
 #assign mem ".Mem"
 
 app0.ack = core0.done
 core0.op = app0.op
-core0.ack = mem.done
-mem.req = core0.mem_req
+
+core0.ack = cache0.done
+cache0.req = core0.mem_req
+cache0(50)
+
+cache0.mem_ack = mem.done
+mem.req = cache0.mem_req
 
 #init app0.c 8100
-#init app0.op 0
 #init core0.done 1
-#init mem.done 0
 
 @loop
 !

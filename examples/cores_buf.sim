@@ -3,6 +3,7 @@
 
 #assign app1 ".App"
 #assign core1 ".Core"
+#assign cache1 ".Cache"
 #assign bus1 ".MasterNode"
 
 #assign app2 ".App"
@@ -14,14 +15,15 @@
 
 app1.ack = core1.done
 core1.op = app1.op
-core1.ack = bus1.done
+core1.ack = cache1.done
+cache1.req = core1.mem_req
+cache1(0)
+cache1.mem_ack = bus1.done
+bus1.req = cache1.mem_req
 bus1(1)
-bus1.req = core1.mem_req
 bus1.link = bus_mem.link
 #init app1.c 4050
-#init app1.op 0
 #init core1.done 1
-#init bus1.done 0
 
 app2.ack = core2.done
 core2.op = app2.op
@@ -30,9 +32,7 @@ bus2(2)
 bus2.req = core2.mem_req
 bus2.link = bus_mem.link
 #init app2.c 4050
-#init app2.op 0
 #init core2.done 1
-#init bus2.done 0
 
 bus_mem.ack = mem.done
 mem.req = bus_mem.mem_req

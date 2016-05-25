@@ -13,7 +13,7 @@ public class Mem extends Module {
 		return d;
 	}	
 
-	private static final long TIME[] = {0L, 0L, 1L, 100L};
+	private static final long TIME[] = {0L, 0L, 20L, 110L};
 	
 	public static final int REQ_NONE = 0;
 	public static final int REQ_READ = 2;
