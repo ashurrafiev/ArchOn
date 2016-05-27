@@ -39,7 +39,7 @@ public class Cache extends Module {
 	protected long update() {
 		boolean miss = firstMiss || RANDOM.nextInt(100) < config;
 		if(blocked) {
-			if(memAck.getValue()!=null && memAck.getValue()!=Mem.REQ_NONE) {
+			if(memAck.getValue()!=null && Mem.getCmd(memAck.getValue())!=Mem.CMD_NONE) {
 				done.value = memAck.getValue();
 				blocked = false;
 			}
@@ -51,7 +51,7 @@ public class Cache extends Module {
 		}
 		else if(miss) {
 			firstMiss = false;
-			if(req.getValue()!=null && req.getValue()!=Mem.REQ_NONE) {
+			if(req.getValue()!=null && Mem.getCmd(req.getValue())!=Mem.CMD_NONE) {
 				memReq.value = req.getValue();
 				blocked = true;
 			}

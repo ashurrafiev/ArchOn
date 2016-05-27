@@ -56,7 +56,7 @@ public class SlaveNode extends Module {
 	protected long update() {
 		if(waiting>=0 && sender<0) {
 			msg = ack.getValue();
-			if(msg!=null && msg!=Mem.REQ_NONE) {
+			if(msg!=null && Mem.getCmd(msg)!=Mem.CMD_NONE) {
 				sender = waiting;
 				waiting = -1;
 			}

@@ -37,7 +37,7 @@ public class MasterNode extends Module {
 		else {
 			done.value = null; // Mem.REQ_NONE;
 		}
-		if(req.getValue()!=null && req.getValue()!=Mem.REQ_NONE) {
+		if(req.getValue()!=null && Mem.getCmd(req.getValue())!=Mem.CMD_NONE) {
 			bus.send(config, req.getValue());
 		}
 		return 1L;

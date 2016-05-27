@@ -15,9 +15,21 @@ public class Mem extends Module {
 
 	private static final long TIME[] = {0L, 0L, 20L, 110L};
 	
-	public static final int REQ_NONE = 0;
-	public static final int REQ_READ = 2;
-	public static final int REQ_WRITE = 3;
+	public static final int CMD_NONE = 0;
+	public static final int CMD_READ = 2;
+	public static final int CMD_WRITE = 3;
+
+	public static int makeReq(int cmd, int addr) {
+		return (cmd & 0x03) | ((addr & 0xffff) << 2);
+	}
+	
+	public static int getAddr(int req) {
+		return (req >> 2) & 0xffff;
+	}
+
+	public static int getCmd(int req) {
+		return req & 0x03;
+	}
 
 	private InPort<Integer> req = new InPort<>(this);
 	private OutPort<Integer> done = new OutPort<Integer>(this, null);
@@ -35,7 +47,7 @@ public class Mem extends Module {
 	@Override
 	protected long update() {
 		done.value = req.getValue();
-		return done.value==null ? 0L : TIME[done.value];
+		return done.value==null ? 0L : TIME[getCmd(done.value)];
 	}
 
 }

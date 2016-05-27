@@ -31,7 +31,7 @@ public class Core extends Module {
 	@Override
 	protected long update() {
 		if(op.getValue()==null || op.getValue()==App.OP_WAIT) {
-			done.value = ack.getValue();
+			done.value = ack.getValue()==null ? null : Mem.getCmd(ack.getValue());
 			memReq.value = null; // Mem.REQ_NONE;
 			return 0L;
 		}
@@ -42,8 +42,8 @@ public class Core extends Module {
 			return 1L;
 		}
 		else {
-			done.value = 0;
-			memReq.value = op.getValue();
+			done.value = null;
+			memReq.value = Mem.makeReq(op.getValue(), config);
 			return 0L;
 		}
 	}

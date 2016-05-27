@@ -1,0 +1,82 @@
+
+#aliaspk "ncl.cs.prime.archon.arch.modules.hicore"
+
+#assign mem00 ".Mem"
+#assign rout00 ".NocRouter"
+
+#assign app01 ".App"
+#assign core01 ".Core"
+#assign cache01 ".Cache"
+#assign rout01 ".NocRouter"
+
+#assign app10 ".App"
+#assign core10 ".Core"
+#assign cache10 ".Cache"
+#assign rout10 ".NocRouter"
+
+#assign app11 ".App"
+#assign core11 ".Core"
+#assign cache11 ".Cache"
+#assign rout11 ".NocRouter"
+
+rout00.req = mem00.done
+mem00.req = rout00.done
+rout00(0)
+rout00.e = rout01.link
+rout00.s = rout10.link
+#init mem00.done 0
+
+app01.ack = core01.done
+core01.op = app01.op
+core01(0)
+core01.ack = cache01.done
+cache01.req = core01.mem_req
+cache01(50)
+cache01.mem_ack = rout01.done
+rout01.req = cache01.mem_req
+rout01(1)
+rout01.w = rout00.link
+rout01.s = rout11.link
+#init app01.c 4050
+#init core01.done 1
+
+app10.ack = core10.done
+core10.op = app10.op
+core10(0)
+core10.ack = cache10.done
+cache10.req = core10.mem_req
+cache10(50)
+cache10.mem_ack = rout10.done
+rout10.req = cache10.mem_req
+rout10(256)
+rout10.e = rout11.link
+rout10.n = rout00.link
+#init app10.c 4050
+#init core10.done 1
+
+app11.ack = core11.done
+core11.op = app11.op
+core11(0)
+core11.ack = cache11.done
+cache11.req = core11.mem_req
+cache11(50)
+cache11.mem_ack = rout11.done
+rout11.req = cache11.mem_req
+rout11(257)
+rout11.w = rout10.link
+rout11.n = rout01.link
+#init app11.c 4050
+#init core11.done 1
+
+@loop
+!
+
+// #print "State01(" app01.c ") " app01.op "; " core01.done ", " core01.mem_req "; " rout01.done 
+// #print "StateMem " rout00.done "; " mem00.done
+
+[^app01.done] #jump @loop
+[^app10.done] #jump @loop
+[^app11.done] #jump @loop
+
+!stop
+

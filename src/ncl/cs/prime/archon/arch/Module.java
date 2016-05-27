@@ -16,7 +16,7 @@ public abstract class Module {
 	private OutPort<?>[] outputs;
 	protected FlagOutPort[] flags;
 	
-	public int config;
+	public int config = 0;
 	
 	protected abstract InPort<?>[] initInputs();
 	protected abstract OutPort<?>[] initOutputs();
