@@ -33,14 +33,15 @@ public class MasterNode extends Module {
 		if(bus.sender==config) {
 			done.value = bus.msg;
 			bus.accept(config);
+			syncTime(bus.getTime());
 		}
 		else {
 			done.value = null; // Mem.REQ_NONE;
 		}
 		if(req.getValue()!=null && Mem.getCmd(req.getValue())!=Mem.CMD_NONE) {
-			bus.send(config, req.getValue());
+			bus.send(config, req.getValue(), getTime());
 		}
-		return 1L;
+		return 0L; // bus delay is managed in the SlaveNode
 	}
 
 }

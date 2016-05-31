@@ -70,7 +70,13 @@ public abstract class Module {
 			estimate(est, invalidated);
 		if(invalidated) {
 			invalidated = false;
-			time += update();
+			
+			// Important!
+			// Saving to temporary variable is required
+			// because update() may change the value of time.
+			// Mutability is the root of evil...
+			long delay = update();
+			time += delay;
 		}
 	}
 	

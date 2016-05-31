@@ -48,8 +48,9 @@ public class App extends Module {
 	@Override
 	protected long update() {
 		if(ack.getValue()!=null && ack.getValue()!=0) {
-			if(counter.value>0)
+			if(counter.value>0) {
 				counter.value--;
+			}
 			done.value = (counter.value==0);
 			if(counter.value!=0) {
 				op.value = weightedRandom(RANDOM, PROBABILITIES);
