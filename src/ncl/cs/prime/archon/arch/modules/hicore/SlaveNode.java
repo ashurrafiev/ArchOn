@@ -53,7 +53,7 @@ public class SlaveNode extends Module {
 		Packet p = new Packet();
 		p.sender = sender;
 		p.msg = msg;
-		p.time = time + HOP_TIME;
+		p.time = time;// + HOP_TIME;
 		queue.add(p);
 		Collections.sort(queue);
 	}
@@ -63,13 +63,18 @@ public class SlaveNode extends Module {
 			this.sender = -1;
 	}
 
+	public static long time;
+	public static int counter = 0;
+	
 	@Override
 	protected long update() {
+		long delay = 0L;
 		if(waiting>=0 && sender<0) {
 			msg = ack.getValue();
 			if(msg!=null && Mem.getCmd(msg)!=Mem.CMD_NONE) {
 				sender = waiting;
 				waiting = -1;
+//				delay = HOP_TIME;
 			}
 		}
 		if(waiting<0 && !queue.isEmpty()) {
@@ -77,11 +82,16 @@ public class SlaveNode extends Module {
 			memReq.value = p.msg;
 			waiting = p.sender;
 			syncTime(p.time);
+//			long dt = getTime() + HOP_TIME - time;
+			time = getTime() + HOP_TIME;
+			counter++;
+//			System.out.printf("[%d] %d / %d = %d\n", dt, time, counter, time/counter);
+			delay = HOP_TIME;
 		}
 		else {
 			memReq.value = null; // Mem.REQ_NONE;
 		}
-		return HOP_TIME;
+		return delay;
 	}
 
 }

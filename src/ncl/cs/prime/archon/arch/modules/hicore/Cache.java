@@ -15,6 +15,8 @@ public class Cache extends Module {
 		return d;
 	}	
 
+	private static final long TIME = 1L;
+	
 	private InPort<Integer> req = new InPort<>(this);
 	private InPort<Integer> memAck = new InPort<>(this);
 	private OutPort<Integer> done = new OutPort<Integer>(this, null);
@@ -47,7 +49,7 @@ public class Cache extends Module {
 				done.value = null;
 			}
 			memReq.value = null;
-			return done.value==null ? 0L : 1L;
+			return 0L;//done.value==null ? 0L : TIME;
 		}
 		else if(miss) {
 			firstMiss = false;
@@ -64,7 +66,7 @@ public class Cache extends Module {
 		else {
 			done.value = req.getValue();
 			memReq.value = null;
-			return done.value==null ? 0L : 1L;
+			return done.value==null ? 0L : TIME;
 		}
 	}
 

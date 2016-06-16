@@ -13,6 +13,8 @@ public class Core extends Module {
 		return d;
 	}	
 	
+	private static final long TIME = 1L;
+	
 	private InPort<Integer> ack = new InPort<>(this);
 	private InPort<Integer> op = new InPort<>(this);
 	private OutPort<Integer> done = new OutPort<Integer>(this, null);
@@ -39,7 +41,7 @@ public class Core extends Module {
 			// TODO add core power
 			done.value = 1;
 			memReq.value = null; // Mem.REQ_NONE;
-			return 1L;
+			return TIME;
 		}
 		else {
 			done.value = null;

@@ -14,6 +14,8 @@ public class CodeExecutor implements Instructions {
 		normal, step, init
 	}
 	
+	public boolean interrupted = false;
+	
 	private Architecture arch = new Architecture();
 	private RouteController router = new RouteController(arch);
 	private Estimation est = null;
@@ -345,10 +347,14 @@ public class CodeExecutor implements Instructions {
 	}
 	
 	public void execute(int[] params, ExecMode execMode) {
+		this.interrupted = false;
 		this.params = params;
 		ExecMode m = ExecMode.normal;
-		while(executeNext(m)) {
+		while(executeNext(m) && !interrupted) {
 			m = execMode;
+			if(Thread.interrupted()) {
+				interrupted = true;
+			}
 		}
 	}
 	

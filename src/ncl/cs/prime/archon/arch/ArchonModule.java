@@ -102,6 +102,7 @@ public class ArchonModule extends Module {
 	public void finishInitialise() {
 		report("Initialising "+name);
 		exec.execute(null, ExecMode.init);
+		// TODO propagate interruption
 	}
 	
 	public void silense() {

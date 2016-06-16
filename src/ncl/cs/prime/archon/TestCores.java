@@ -6,17 +6,20 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.Random;
 
+import ncl.cs.prime.archon.arch.modules.hicore.MasterNode;
+import ncl.cs.prime.archon.arch.modules.hicore.SlaveNode;
 import ncl.cs.prime.archon.bytecode.CodeExecutor;
 import ncl.cs.prime.archon.bytecode.CodeExecutor.ExecMode;
 import ncl.cs.prime.archon.parse.ProgramParserBytecode;
 
 public class TestCores {
 
-	public static boolean noc = false;
+	public static boolean noc = true;
 	public static int totalWork = 81920;
 	public static boolean privateCache = true;
 	public static int cacheMissPercent = 50;
-	public static int memNodes = 1;
+	public static int memNodes = -1;
+	public static int maxCores = 256;
 	
 	public static void createCodeBuf(File f, int n) {
 		try {
@@ -169,6 +172,9 @@ public class TestCores {
 	}
 
 	public static void simulate(File f) {
+		MasterNode.total = 0L;
+		MasterNode.counter = 0;
+		SlaveNode.counter = 0;
 		ProgramParserBytecode p = new ProgramParserBytecode();
 		if(p.compile(f, false)!=null) {
 			f = new File(f.getAbsolutePath()+".bin");
@@ -178,14 +184,14 @@ public class TestCores {
 			try {
 				exec.getIP().loadCode(f);
 				exec.execute(null, ExecMode.normal);
-				System.out.println(exec.getArch().syncTime());
+				System.out.printf("%d\t%.1f\t%.1f\n", exec.getArch().syncTime(), MasterNode.total/(double)MasterNode.counter, SlaveNode.time/(double)SlaveNode.counter);
 				
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
 		else
-			System.out.println("Done with errors");
+			System.out.println("Not compiled");
 
 	}
 	
@@ -220,18 +226,24 @@ public class TestCores {
 		if(noc) {
 			System.out.println("NoC interconnect\n");
 			System.out.printf("Mode:\tMem:\tCores:\tTime:\n");
-			if(memNodes<0) {
-				for(int n=2; n<=16; n++) {
+			if(memNodes==-2) {
+				for(int n=1; n*n<=maxCores; n++) {
+					memNodes = n*n;
+					System.out.printf("NoC\t%d\t%d\t", memNodes, n*n);
+					createCodeNoc(f, n, n+n, memNodes);
+					simulate(f);
+				}
+			}
+			else if(memNodes<0) {
+				for(int n=1; n*n<=maxCores; n++) {
 					memNodes = n;
-					if(n*(n+1)/2 < memNodes)
-						continue;
-					System.out.printf("NoC\t%d\t%d\t", memNodes, n*(n+1)-memNodes);
+					System.out.printf("NoC\t%d\t%d\t", memNodes, n*n);
 					createCodeNoc(f, n, n+1, memNodes);
 					simulate(f);
 				}
 			}
 			else {
-				for(int n=2; n<=16; n++) {
+				for(int n=2; n*n<=maxCores; n++) {
 					if(n*n/2 < memNodes)
 						continue;
 					System.out.printf("NoC\t%d\t%d\t", memNodes, n*n-memNodes);
@@ -243,10 +255,19 @@ public class TestCores {
 		else {
 			System.out.println("Bus interconnect\n");
 			System.out.printf("Mode:\tMem:\tCores:\tTime:\n");
-			for(int n=1; n<=256; n<<=1) {
-				System.out.printf("Buf\t1\t%d\t", n);
-				createCodeBuf(f, n);
-				simulate(f);
+			if(maxCores<=8) {
+				for(int n=1; n<=maxCores; n++) {
+					System.out.printf("Bus\t1\t%d\t", n);
+					createCodeBuf(f, n);
+					simulate(f);
+				}
+			}
+			else {
+				for(int n=1; n*n<=maxCores; n++) {
+					System.out.printf("Bus\t1\t%d\t", n*n);
+					createCodeBuf(f, n*n);
+					simulate(f);
+				}
 			}
 		}
 	}

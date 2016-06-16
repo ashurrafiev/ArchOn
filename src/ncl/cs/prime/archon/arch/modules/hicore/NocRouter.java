@@ -19,7 +19,7 @@ public class NocRouter extends Module {
 		return d;
 	}
 	
-	private static final long HOP_TIME = 1L; 
+	private static final long HOP_TIME = 3L; 
 	
 	private InPort<Integer> req = new InPort<>(this);
 	private InPort<Integer> n = new InPort<>(this);
@@ -96,10 +96,14 @@ public class NocRouter extends Module {
 		Packet p = queue.getFirst();
 		NocRouter next = (NocRouter) link.getLinkedModule();
 		if(next==null) {
-			throw new RuntimeException("Bad route at "+config+" for addr "+p.addr);
+			throw new RuntimeException("Bad route at "+addrString(config)+" for addr "+addrString(p.addr));
 		}
 		if(next.send(p))
 			queue.remove(p);
+	}
+	
+	public static String addrString(int addr) {
+		return String.format("%d[%d,%d]", addr, addr>>8, addr&0xff);
 	}
 	
 	@Override

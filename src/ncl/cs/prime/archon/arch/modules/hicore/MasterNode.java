@@ -27,6 +27,10 @@ public class MasterNode extends Module {
 		return new OutPort<?>[] {done};
 	}
 	
+	private long sendTime;
+	public static long total = 0L;
+	public static int counter = 0;
+	
 	@Override
 	protected long update() {
 		SlaveNode bus = (SlaveNode) link.getLinkedModule();
@@ -34,12 +38,16 @@ public class MasterNode extends Module {
 			done.value = bus.msg;
 			bus.accept(config);
 			syncTime(bus.getTime());
+			total += getTime()-sendTime;
+			counter++;
+//			System.out.printf("%d: C%d ping=%d, ave=%d\n", getTime(), config, getTime()-sendTime, total/counter);
 		}
 		else {
 			done.value = null; // Mem.REQ_NONE;
 		}
 		if(req.getValue()!=null && Mem.getCmd(req.getValue())!=Mem.CMD_NONE) {
-			bus.send(config, req.getValue(), getTime());
+			sendTime = getTime();
+			bus.send(config, req.getValue(), sendTime);
 		}
 		return 0L; // bus delay is managed in the SlaveNode
 	}
