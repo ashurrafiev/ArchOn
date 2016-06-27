@@ -14,10 +14,10 @@ import ncl.cs.prime.archon.parse.ProgramParserBytecode;
 
 public class TestCores {
 
-	public static boolean noc = true;
+	public static boolean noc = false;
 	public static int totalWork = 81920;
 	public static boolean privateCache = true;
-	public static int cacheMissPercent = 50;
+	public static int cacheMissPercent = 100;
 	public static int memNodes = -1;
 	public static int maxCores = 256;
 	
@@ -25,6 +25,7 @@ public class TestCores {
 		try {
 			PrintWriter out = new PrintWriter(f);
 			out.println("#aliaspk \"ncl.cs.prime.archon.arch.modules.hicore\"");
+			out.println("#estim \".HiEstimation\"");
 
 			for(int i=1; i<=n; i++) {
 				out.printf("#assign app%d \".App\"\n", i);
@@ -82,6 +83,7 @@ public class TestCores {
 		try {
 			PrintStream out = new PrintStream(f);
 			out.println("#aliaspk \"ncl.cs.prime.archon.arch.modules.hicore\"");
+			out.println("#estim \".HiEstimation\"");
 
 			int work = totalWork / (n*m - memNodes);
 			int[] memNodeMap = new int[memNodes];

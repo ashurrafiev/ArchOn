@@ -7,7 +7,7 @@ import ncl.cs.prime.archon.arch.InPort;
 import ncl.cs.prime.archon.arch.Module;
 import ncl.cs.prime.archon.arch.OutPort;
 
-public class SlaveNode extends Module {
+public class SlaveNode extends HiModule {
 
 	public static Module.Declaration getDeclaration() {
 		Declaration d = new Declaration();
@@ -16,7 +16,13 @@ public class SlaveNode extends Module {
 		return d;
 	}	
 
-	private static final long HOP_TIME = 1L; 
+	private static final long DELAY_HOP = 4L;
+	private static final double ENERGY_HOP = 1.0;
+	private static final double LEAKAGE = 1.0;
+	
+	private long delayHop = DELAY_HOP;
+	private double energyHop = ENERGY_HOP;
+	private double leakage = LEAKAGE;
 	
 	private InPort<Integer> ack = new InPort<>(this);
 	private OutPort<Integer> memReq = new OutPort<Integer>(this, null);
@@ -40,6 +46,21 @@ public class SlaveNode extends Module {
 	private LinkedList<Packet> queue = new LinkedList<>();
 	
 	@Override
+	public void setup(String key, String value) {
+		if("delayHop".equals(key))
+			delayHop = Long.parseLong(value);
+		else if("energyHop".equals(key))
+			energyHop = Double.parseDouble(value);
+		else if("leakage".equals(key))
+			leakage = Double.parseDouble(value);
+	}
+	
+	@Override
+	protected double getLeakage() {
+		return leakage;
+	}
+	
+	@Override
 	protected InPort<?>[] initInputs() {
 		return new InPort<?>[] {ack};
 	}
@@ -53,7 +74,7 @@ public class SlaveNode extends Module {
 		Packet p = new Packet();
 		p.sender = sender;
 		p.msg = msg;
-		p.time = time;// + HOP_TIME;
+		p.time = time;
 		queue.add(p);
 		Collections.sort(queue);
 	}
@@ -67,14 +88,13 @@ public class SlaveNode extends Module {
 	public static int counter = 0;
 	
 	@Override
-	protected long update() {
+	protected long update(HiEstimation est) {
 		long delay = 0L;
 		if(waiting>=0 && sender<0) {
 			msg = ack.getValue();
 			if(msg!=null && Mem.getCmd(msg)!=Mem.CMD_NONE) {
 				sender = waiting;
 				waiting = -1;
-//				delay = HOP_TIME;
 			}
 		}
 		if(waiting<0 && !queue.isEmpty()) {
@@ -82,14 +102,13 @@ public class SlaveNode extends Module {
 			memReq.value = p.msg;
 			waiting = p.sender;
 			syncTime(p.time);
-//			long dt = getTime() + HOP_TIME - time;
-			time = getTime() + HOP_TIME;
+			time = getTime() + delayHop;
 			counter++;
-//			System.out.printf("[%d] %d / %d = %d\n", dt, time, counter, time/counter);
-			delay = HOP_TIME;
+			est.totalEnergy += energyHop;
+			delay = delayHop;
 		}
 		else {
-			memReq.value = null; // Mem.REQ_NONE;
+			memReq.value = null;
 		}
 		return delay;
 	}

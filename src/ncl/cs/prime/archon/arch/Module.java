@@ -16,11 +16,26 @@ public abstract class Module {
 	private OutPort<?>[] outputs;
 	protected FlagOutPort[] flags;
 	
-	public int config = 0;
+	protected int config = 0;
 	
 	protected abstract InPort<?>[] initInputs();
 	protected abstract OutPort<?>[] initOutputs();
 	protected abstract long update();
+	
+	public void setup(String key, String value) {
+	}
+	
+	public void setup(String keyValues) {
+		if(keyValues==null || keyValues.isEmpty())
+			return;
+		String[] pairs = keyValues.split("\\s*[\\;\\,]\\s*");
+		for(String p : pairs) {
+			if(p.isEmpty())
+				continue;
+			String[] s = p.split("\\s*[\\:\\=]\\s*", 2);
+			setup(s[0], s.length<2 ? null : s[1]);
+		}
+	}
 	
 	public void initPorts() {
 		inputs = initInputs();
@@ -44,6 +59,10 @@ public abstract class Module {
 		return flags;
 	}
 	
+	public void setConfig(int config) {
+		this.config = config;
+	}
+	
 	public long getTime() {
 		return time;
 	}
@@ -58,6 +77,10 @@ public abstract class Module {
 	}
 	
 	protected void estimate(Estimation est, boolean enabled) {
+	}
+	
+	protected long update(Estimation est) {
+		return update();
 	}
 	
 	public void recompute(Estimation est) {
@@ -75,7 +98,7 @@ public abstract class Module {
 			// Saving to temporary variable is required
 			// because update() may change the value of time.
 			// Mutability is the root of evil...
-			long delay = update();
+			long delay = update(est);
 			time += delay;
 		}
 	}

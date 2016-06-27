@@ -18,7 +18,7 @@ public class RouteController {
 	}
 	
 	public void configure(int destId, int config) {
-		arch.getModuleById(destId).config = config;
+		arch.getModuleById(destId).setConfig(config);
 	}
 	
 	public void connect(int destId, int srcId) throws ArchitectureException {
@@ -79,6 +79,10 @@ public class RouteController {
 	
 	public boolean checkCondition(int destId) {
 		return arch.getModuleById(destId).getFlags()[Architecture.portFromId(destId)].value;
+	}
+	
+	public void setup(int destId, String keyValues) {
+		arch.getModuleById(destId).setup(keyValues);
 	}
 	
 	@SuppressWarnings("unchecked")

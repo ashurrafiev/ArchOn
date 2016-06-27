@@ -7,7 +7,7 @@ import ncl.cs.prime.archon.arch.InPort;
 import ncl.cs.prime.archon.arch.Module;
 import ncl.cs.prime.archon.arch.OutPort;
 
-public class App extends Module {
+public class App extends HiModule {
 
 	public static Module.Declaration getDeclaration() {
 		Declaration d = new Declaration();
@@ -23,12 +23,29 @@ public class App extends Module {
 	public static final int OP_MEM_WRITE = 3;
 	
 	private static final Random RANDOM = new Random(); // change to global random with seed?
-	private static final int PROBABILITIES[] = {0, 4718597, 3342340, 65536};
+	private static final int PROBABILITIES[] = {0, 4718597, 65536*18 /*3342340*/, 65536};
+	
+	private int probs[] = new int[] {0, PROBABILITIES[OP_CPU], PROBABILITIES[OP_MEM_READ], PROBABILITIES[OP_MEM_WRITE]};
 	
 	private InPort<Integer> ack = new InPort<>(this);
 	private OutPort<Integer> op = new OutPort<Integer>(this, null);
 	private OutPort<Integer> counter = new OutPort<Integer>(this, -1);
 	protected FlagOutPort done = new FlagOutPort(this);
+	
+	@Override
+	public void setup(String key, String value) {
+		if("countCpu".equals(key))
+			probs[OP_CPU] = Integer.parseInt(value);
+		else if("countMemRead".equals(key))
+			probs[OP_MEM_READ] = Integer.parseInt(value);
+		else if("countMemWrite".equals(key))
+			probs[OP_MEM_WRITE] = Integer.parseInt(value);
+	}
+	
+	@Override
+	protected double getLeakage() {
+		return 0.0;
+	}
 	
 	@Override
 	protected InPort<?>[] initInputs() {
@@ -46,18 +63,18 @@ public class App extends Module {
 	}
 	
 	@Override
-	protected long update() {
+	protected long update(HiEstimation est) {
 		if(ack.getValue()!=null && ack.getValue()!=0) {
-			if(counter.value>0) {
+			if(counter.value>=0) {
 				counter.value--;
 			}
-			done.value = (counter.value==0);
-			if(counter.value!=0) {
-				op.value = weightedRandom(RANDOM, PROBABILITIES);
+			done.value = (counter.value<0);
+			if(counter.value>=0) {
+				op.value = weightedRandom(RANDOM, probs);
 			}
 		}
 		else
-			op.value = null; // OP_WAIT;
+			op.value = null;
 		return 0L;
 	}
 	

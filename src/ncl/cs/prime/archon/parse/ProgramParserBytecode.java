@@ -508,6 +508,33 @@ public class ProgramParserBytecode extends BytecodeWriter implements Instruction
 			}
 		}
 		
+		else if(s.equals("setup")) {
+			next();
+			if(token.type==AsmToken.IDENTIFIER) {
+				String name = (String) token.value;
+				if(name.indexOf('.')>=0) {
+					error("bad var name "+name);
+					return;
+				}
+				next();
+				if(token.type==AsmToken.STRING) {
+					regLineIndex();
+					write(D_SETUP);
+					writeInt(getVar(name).id);
+					writeString((String) token.value);
+					next();
+				}
+				else {
+					error("alias name or module class expected");
+					return;
+				}
+			}
+			else {
+				error("var name expected");
+				return;
+			}
+		}
+		
 		else if(s.equals("free")) {
 			next();
 			if(token.type==AsmToken.IDENTIFIER) {

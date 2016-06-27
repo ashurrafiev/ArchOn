@@ -52,12 +52,12 @@ public class NocDesignPanel extends JPanel {
 					if(selection==Selection.row) {
 						for(int y=Math.min(startSel, endSel); y<=Math.max(startSel, endSel); y++)
 							for(int x=0; x<builder.width; x++)
-								builder.mesh[x][y] = NodeListPanel.activeType;
+								builder.mesh[x][y] = NocNodeListPanel.activeType;
 					}
 					else if(selection==Selection.col) {
 						for(int x=Math.min(startSel, endSel); x<=Math.max(startSel, endSel); x++)
 							for(int y=0; y<builder.height; y++)
-								builder.mesh[x][y] = NodeListPanel.activeType;
+								builder.mesh[x][y] = NocNodeListPanel.activeType;
 					}
 					selection = Selection.none;
 					repaint();
@@ -71,6 +71,28 @@ public class NocDesignPanel extends JPanel {
 					}
 					selection = Selection.none;
 					repaint();
+				}
+				else {
+					int w = (int) Math.sqrt(builder.countCoreNodes());
+					NodeType core = NocNodeListPanel.activeType.isCore ? NocNodeListPanel.activeType : NodeType.coreA7cache;
+					switch(e.getKeyCode()) {
+						case KeyEvent.VK_F1:
+							builder = NocBuilder.createSingleMemNoc(w, w, core);
+							repaint();
+							break;
+						case KeyEvent.VK_F2:
+							builder = NocBuilder.create4MemNoc(w, w, core);
+							repaint();
+							break;
+						case KeyEvent.VK_F3:
+							builder = NocBuilder.createMemRowNoc(w, w, core);
+							repaint();
+							break;
+						case KeyEvent.VK_F4:
+							builder = NocBuilder.createMemBoxNoc(w, w, core);
+							repaint();
+							break;
+					}
 				}
 			}
 		});
@@ -142,7 +164,7 @@ public class NocDesignPanel extends JPanel {
 			@Override
 			public void mouseDragged(MouseEvent e) {
 				mouse = toMeshPoint(e.getPoint());
-				if(selecting) {
+				if(selecting && mouse!=null) {
 					if(selection==Selection.row && mouse.y>=0 && mouse.y<builder.height) {
 						endSel = mouse.y;
 					}
@@ -159,7 +181,7 @@ public class NocDesignPanel extends JPanel {
 	
 	private void editNode() {
 		if(mouse!=null && mouse.x>=0 && mouse.x<builder.width && mouse.y>=0 && mouse.y<builder.height)
-			builder.mesh[mouse.x][mouse.y] = NodeListPanel.activeType;
+			builder.mesh[mouse.x][mouse.y] = NocNodeListPanel.activeType;
 	}
 	
 	private int calcx(int x) {

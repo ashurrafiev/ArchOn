@@ -106,6 +106,7 @@ public class CodeExecutor implements Instructions {
 			case D_PRINT_LN:
 			case D_ESTIM:
 			case D_EST_PRINT:
+			case D_SETUP:
 				error("Cannot condition init/debug operations");
 				return;
 
@@ -214,7 +215,14 @@ public class CodeExecutor implements Instructions {
 				if(!isExtern(srcId))
 					router.debugSetValue(srcId, value);
 				break;
-			}	
+			}
+			
+			case D_SETUP:
+			{
+				int var = ip.nextInt();
+				router.setup(var, ip.nextString());
+				break;
+			}
 			
 			case I_UNLINK:
 				router.disconnect(ip.nextInt());

@@ -9,11 +9,12 @@ import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import ncl.cs.prime.archon.hicoredemo.NocBuilder.NodeType;
 
-public class NodeListPanel extends JPanel {
+public class NocNodeListPanel extends JPanel {
 	
 	public static final int WIDTH = NocDesignPanel.MESH_STEP+100;
 	public static final int ITEM_HEIGHT = NocDesignPanel.MESH_STEP+30;
@@ -25,7 +26,7 @@ public class NodeListPanel extends JPanel {
 
 	public static NodeType activeType = NodeType.coreA7cache;
 	
-	public NodeListPanel() {
+	public NocNodeListPanel() {
 		setPreferredSize(new Dimension(WIDTH, ITEM_HEIGHT*NodeType.values().length));
 		
 		addMouseListener(new MouseAdapter() {
@@ -35,6 +36,11 @@ public class NodeListPanel extends JPanel {
 				if(y>=0 && y<NodeType.values().length)
 					activeType = NodeType.values()[y];
 				repaint();
+				if(e.getButton()==MouseEvent.BUTTON3 && activeType.setup!=null) {
+					String s = JOptionPane.showInputDialog(activeType.name()+" characterisation parameters:", activeType.setup);
+					if(s!=null)
+						activeType.setup = s;
+				}
 			}
 		});
 	}

@@ -10,6 +10,7 @@ public interface Instructions {
 
 	public static final byte D_ESTIM = -8; // s:class
 	public static final byte D_EST_PRINT = -9; //
+	public static final byte D_SETUP = -10; // i:var s:string
 
 	public static final byte D_SYNC_ALL = -16; //
 

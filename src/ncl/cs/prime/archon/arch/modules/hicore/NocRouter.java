@@ -6,9 +6,8 @@ import ncl.cs.prime.archon.arch.InPort;
 import ncl.cs.prime.archon.arch.Module;
 import ncl.cs.prime.archon.arch.OutPort;
 
-public class NocRouter extends Module {
+public class NocRouter extends HiModule {
 
-	public static final int QUEUE_SIZE = 1024;
 	public static final int X_MASK = 0x00ff;
 	public static final int Y_MASK = 0xff00;
 	
@@ -19,7 +18,17 @@ public class NocRouter extends Module {
 		return d;
 	}
 	
-	private static final long HOP_TIME = 3L; 
+	private static final int QUEUE_SIZE = 64;
+	private static final int TTL = 1024;
+	private static final long DELAY_HOP = 2L;
+	private static final double ENERGY_HOP = 1.0;
+	private static final double LEAKAGE = 1.0;
+	
+	private int queueSize = QUEUE_SIZE;
+	private int packetTTL = TTL;
+	private long delayHop = DELAY_HOP;
+	private double energyHop = ENERGY_HOP;
+	private double leakage = LEAKAGE;
 	
 	private InPort<Integer> req = new InPort<>(this);
 	private InPort<Integer> n = new InPort<>(this);
@@ -31,6 +40,7 @@ public class NocRouter extends Module {
 
 	private class Packet implements Comparable<Packet> {
 		public long time;
+		public int ttl;
 		public int addr;
 		public int msg;
 		
@@ -47,6 +57,25 @@ public class NocRouter extends Module {
 	private LinkedList<Packet> inQueue = new LinkedList<>();
 
 	@Override
+	public void setup(String key, String value) {
+		if("queueSize".equals(key))
+			queueSize = Integer.parseInt(value);
+		else if("packetTTL".equals(key))
+			packetTTL = Integer.parseInt(value);
+		else if("delayHop".equals(key))
+			delayHop = Long.parseLong(value);
+		else if("energyHop".equals(key))
+			energyHop = Double.parseDouble(value);
+		else if("leakage".equals(key))
+			leakage = Double.parseDouble(value);
+	}
+	
+	@Override
+	protected double getLeakage() {
+		return leakage;
+	}
+	
+	@Override
 	protected InPort<?>[] initInputs() {
 		return new InPort<?>[] {req, n, s, w, e};
 	}
@@ -56,9 +85,10 @@ public class NocRouter extends Module {
 		return new OutPort<?>[] {done, link};
 	}
 	
-	public boolean send(int sender, int req, long time) {
+	public boolean send(int sender, int req, long time, int ttl) {
 		Packet p = new Packet();
 		p.time = time;
+		p.ttl = ttl;
 		p.addr = Mem.getAddr(req);
 		p.msg = Mem.makeReq(Mem.getCmd(req), sender);
 		return send(p);
@@ -66,13 +96,17 @@ public class NocRouter extends Module {
 	
 	private boolean send(Packet p) {
 		LinkedList<Packet> queue = null;
-		if(p.addr==config)
+		long delay = delayHop;
+		if(p.addr==config) {
 			queue = inQueue;
+			delay = 0L;
+		}
 		else if((p.addr & X_MASK) < (config & X_MASK))
 			queue = wQueue;
 		else if((p.addr & X_MASK) > (config & X_MASK))
 			queue = eQueue;
-		if(queue!=null && queue.size()<QUEUE_SIZE) {
+		if(queue!=null && queue.size()<queueSize) {
+			p.time += delay;
 			queue.add(p);
 			return true;
 		}
@@ -82,24 +116,33 @@ public class NocRouter extends Module {
 			queue = nQueue;
 		else if((p.addr & Y_MASK) > (config & Y_MASK))
 			queue = sQueue;
-		if(queue!=null && queue.size()<QUEUE_SIZE) {
-			p.time += HOP_TIME;
+		if(queue!=null && queue.size()<queueSize) {
+			p.time += delay;
 			queue.add(p);
 			return true;
 		}
 		return false;
 	}
 	
-	private void sendForward(LinkedList<Packet> queue, InPort<Integer> link) {
+	private void sendForward(LinkedList<Packet> queue, InPort<Integer> link, HiEstimation est) {
 		if(queue.isEmpty())
 			return;
+		for(Packet p : queue) {
+			p.ttl--;
+			if(p.ttl<0)
+				throw new RuntimeException("NoC congested to stall (hop)");
+		}
+		
 		Packet p = queue.getFirst();
 		NocRouter next = (NocRouter) link.getLinkedModule();
 		if(next==null) {
 			throw new RuntimeException("Bad route at "+addrString(config)+" for addr "+addrString(p.addr));
 		}
-		if(next.send(p))
+		
+		if(next.send(p)) {
 			queue.remove(p);
+			est.totalEnergy += energyHop;
+		}
 	}
 	
 	public static String addrString(int addr) {
@@ -107,23 +150,24 @@ public class NocRouter extends Module {
 	}
 	
 	@Override
-	protected long update() {
-		sendForward(nQueue, n);
-		sendForward(sQueue, s);
-		sendForward(wQueue, w);
-		sendForward(eQueue, e);
+	protected long update(HiEstimation est) {
+		sendForward(nQueue, n, est);
+		sendForward(sQueue, s, est);
+		sendForward(wQueue, w, est);
+		sendForward(eQueue, e, est);
 		if(!inQueue.isEmpty()) {
 			Packet p = inQueue.removeFirst();
 			done.value = p.msg;
 			syncTime(p.time);
 		}
 		else {
-			done.value = null; // Mem.REQ_NONE;
+			done.value = null;
 		}
 		if(req.getValue()!=null && Mem.getCmd(req.getValue())!=Mem.CMD_NONE) {
-			send(config, req.getValue(), getTime());
+			if(!send(config, req.getValue(), getTime(), packetTTL))
+				throw new RuntimeException("NoC congested to stall (send)");
 		}
-		return HOP_TIME;
+		return 0L;
 	}
 	
 }

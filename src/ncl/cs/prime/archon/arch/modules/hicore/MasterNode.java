@@ -40,10 +40,9 @@ public class MasterNode extends Module {
 			syncTime(bus.getTime());
 			total += getTime()-sendTime;
 			counter++;
-//			System.out.printf("%d: C%d ping=%d, ave=%d\n", getTime(), config, getTime()-sendTime, total/counter);
 		}
 		else {
-			done.value = null; // Mem.REQ_NONE;
+			done.value = null;
 		}
 		if(req.getValue()!=null && Mem.getCmd(req.getValue())!=Mem.CMD_NONE) {
 			sendTime = getTime();
