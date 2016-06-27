@@ -14,7 +14,10 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
+import java.io.File;
+import java.io.IOException;
 
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import ncl.cs.prime.archon.hicoredemo.BusBuilder.EmptyNode;
@@ -59,6 +62,16 @@ public class BusDesignPanel extends JPanel {
 						BusNodeListPanel.instance.updateSelection(selectionNode);
 					}
 					repaint();
+				}
+				else if(e.getKeyCode()==KeyEvent.VK_S && e.isControlDown()) {
+					File f = new File("busbuilder.sim");
+					try {
+						builder.writeCode(f);
+						JOptionPane.showMessageDialog(null, "Source script saved to "+f.getName());
+					}
+					catch(IOException ex) {
+						JOptionPane.showMessageDialog(null, "Cannot write to "+f.getName(), "Error", JOptionPane.ERROR_MESSAGE);
+					}
 				}
 			}
 		});

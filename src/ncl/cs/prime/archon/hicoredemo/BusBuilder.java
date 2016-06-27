@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public class BusBuilder {
+public class BusBuilder implements Builder {
 
 	public enum NodeType {
 		empty,
@@ -383,10 +383,12 @@ public class BusBuilder {
 		return u.oldSub;
 	}
 	
+	@Override
 	public void writeCode(File f) throws IOException {
 		writeCode(new PrintStream(f)).close();
 	}
 	
+	@Override
 	public PrintStream writeCode(PrintStream out) {
 		out.println("#aliaspk \"ncl.cs.prime.archon.arch.modules.hicore\"");
 		out.println("#estim \".HiEstimation\"");

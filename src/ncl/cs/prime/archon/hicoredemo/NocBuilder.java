@@ -5,7 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 
-public class NocBuilder {
+public class NocBuilder implements Builder {
 	
 	public enum NodeType {
 		blocked,
@@ -133,10 +133,12 @@ public class NocBuilder {
 		return count;
 	}
 	
+	@Override
 	public void writeCode(File f) throws IOException {
 		writeCode(new PrintStream(f)).close();
 	}
 	
+	@Override
 	public PrintStream writeCode(PrintStream out) {
 		out.println("#aliaspk \"ncl.cs.prime.archon.arch.modules.hicore\"");
 		out.println("#estim \".HiEstimation\"");
