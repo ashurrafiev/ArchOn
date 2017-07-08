@@ -92,7 +92,7 @@ public abstract class RegisterMap extends AsmMapParserBase {
 					System.err.println("Need more registers to map all variables.");
 					return false;
 				}
-			} while(usedRegs.contains(regNames[nextReg]));
+			} while(usedRegs.contains(nextReg));
 			varMap.put(var, regNames[nextReg]);
 		}
 		

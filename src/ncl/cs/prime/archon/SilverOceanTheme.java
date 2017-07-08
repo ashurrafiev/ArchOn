@@ -1,6 +1,7 @@
 package ncl.cs.prime.archon;
 
 import java.awt.Font;
+import java.awt.Toolkit;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
@@ -21,7 +22,9 @@ public class SilverOceanTheme extends OceanTheme {
 	
 	@Override
 	public FontUIResource getControlTextFont() {
-		return new FontUIResource("Verdana", Font.PLAIN, 11);
+	    int screenRes = Toolkit.getDefaultToolkit().getScreenResolution();
+	    int fontSize = (int)Math.round(8.0 * screenRes / 72.0);
+		return new FontUIResource("Verdana", Font.PLAIN, fontSize);
 	}
 	@Override
 	public FontUIResource getMenuTextFont() {
