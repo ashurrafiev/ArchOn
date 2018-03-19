@@ -41,7 +41,7 @@ import ncl.cs.prime.archon.parse.ProgramParserBytecode;
 
 public class DemoConvolution extends JFrame {
 
-	public static final String IMAGE_PATH = "sample.png";
+	public static final String IMAGE_PATH = "examples/sample.png";
 	public static final int MAX_CORES = 64;
 	
 	private int[] matrix = {0, -1, 0, -1, 4, -1, 0, -1, 0};
@@ -593,7 +593,7 @@ public class DemoConvolution extends JFrame {
 	
 	public static void main(String[] args) {
 		SilverOceanTheme.enable();
-		new DemoConvolution(ProgramParserBytecode.compileFile("convo_arm.sim", true));
+		new DemoConvolution(ProgramParserBytecode.compileFile("examples/convo_arm.sim", true));
 	}
 
 }

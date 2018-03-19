@@ -6,8 +6,8 @@ import java.util.Scanner;
 
 public class PrimeModel {
 
-	private static final String PATH = "prime_fpga.csv";
-	private static final String SCALING_PATH = "scaling.csv";
+	private static final String PATH = "examples/prime_fpga.csv";
+	private static final String SCALING_PATH = "examples/scaling.csv";
 	public static final int MAX_CORES = 4;
 	
 	public static final PrimeModel model = new PrimeModel();

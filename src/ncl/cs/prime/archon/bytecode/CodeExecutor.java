@@ -74,7 +74,7 @@ public class CodeExecutor implements Instructions {
 	@SuppressWarnings("unchecked")
 	private void createEstimation(String clsName) {
 		if(est!=null) {
-			error("Estimation already initialised");
+			// error("Estimation already initialised");
 			return;
 		}		
 		try {

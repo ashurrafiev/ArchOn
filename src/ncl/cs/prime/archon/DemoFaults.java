@@ -45,8 +45,8 @@ public class DemoFaults extends JFrame {
 	public static final String[] NAMES = {"debug:print", "debug:printstr", "debug:println", "{D}init", "{D}param", "debug:estim",
 		"debug:estprint", "{D}unlink", "{D}link", "{D}link flag", "{D}link nflag", "{D}unlink all", "{D}config", "{J}jump", "nop", "{X}exec", "{X}exec n", "{X}stop", "{J}condition", "{J}ncondition", "assign", "free", "aliases"};
 
-	public static final String SRC_PATH = "convo_arm.sim";
-	public static final String IMAGE_PATH = "sample.png";
+	public static final String SRC_PATH = "examples/convo_arm.sim";
+	public static final String IMAGE_PATH = "examples/sample.png";
 	public static final int MAX_CORES = 64;
 	public static final int MAX_TEST_RUNS = 1000;
 	
