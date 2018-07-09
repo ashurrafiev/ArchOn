@@ -21,6 +21,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import ncl.cs.prime.archon.hicoredemo.NocBuilder.NodeType;
+import ncl.cs.prime.archon.hicoredemo.python.PyNocBuilder;
 
 public class NocDesignPanel extends JPanel {
 
@@ -104,6 +105,16 @@ public class NocDesignPanel extends JPanel {
 						case KeyEvent.VK_F4:
 							builder = NocBuilder.createMemBoxNoc(w, w, core);
 							repaint();
+							break;
+						case KeyEvent.VK_F5:
+							NocBuilder b = PyNocBuilder.createFromFile(PyNocBuilder.scriptPath, w);
+							if(b!=null) {
+								builder = b;
+								repaint();
+							}
+							else {
+								JOptionPane.showMessageDialog(null, "Python script contains errors.", "Failed", JOptionPane.WARNING_MESSAGE);
+							}
 							break;
 					}
 				}

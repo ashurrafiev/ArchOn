@@ -64,7 +64,7 @@ public class NocBuilder implements Builder {
 			}
 	}
 	
-	private NocBuilder(int width, int height) {
+	protected NocBuilder(int width, int height) {
 		mesh = new NodeType[width][height];
 		this.width = width;
 		this.height = height;

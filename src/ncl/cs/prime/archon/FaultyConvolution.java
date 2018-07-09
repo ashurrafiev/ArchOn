@@ -9,7 +9,7 @@ import ncl.cs.prime.archon.bytecode.FaultyCodeExecutor.InjectionInfo;
 
 public class FaultyConvolution {
 
-	public static final String IMAGE_PATH = "sample.png";
+	public static final String IMAGE_PATH = "examples/sample.png";
 	public static final int FAULT_CHANCE = 10000;
 	public static final int COUNTER_LIMIT = 10000000;
 	public static final int RUNS = 10;
