@@ -1,7 +1,9 @@
-builder = PyNocBuilder(size*2, size+1)
+w = 8
+h = 5
+builder = PyNocBuilder(w, h)
 
-for x in range(size*2):
-    for y in range(size+1):
+for x in range(w):
+    for y in range(h):
         if y==0:
             builder.set(x, y, NodeType.memory)
         elif y%2==1:
