@@ -21,10 +21,10 @@ public class Core extends HiModule {
 	private double energyCpu = ENERGY_CPU;
 	private double leakage = LEAKAGE;
 	
-	private InPort<Integer> ack = new InPort<>(this);
-	private InPort<Integer> op = new InPort<>(this);
-	private OutPort<Integer> done = new OutPort<Integer>(this, null);
-	private OutPort<Integer> memReq = new OutPort<Integer>(this, null);
+	private InPort.Int ack = new InPort.Int(this);
+	private InPort.Int op = new InPort.Int(this);
+	private OutPort.Int done = new OutPort.Int(this, null);
+	private OutPort.Int memReq = new OutPort.Int(this, null);
 
 	public Core() {
 		config = -1;

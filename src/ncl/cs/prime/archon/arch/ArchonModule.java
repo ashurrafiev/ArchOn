@@ -19,8 +19,8 @@ public class ArchonModule extends Module {
 	private CodeExecutor exec;
 	
 	private ExternDeclaration decl;
-	private InPort<?>[] inputs = null;
-	private OutPort<?>[] outputs = null;
+	private InPort.Int[] inputs = null;
+	private OutPort.Int[] outputs = null;
 	private FlagOutPort[] flags = null;
 	
 	public String name = "...";
@@ -32,15 +32,15 @@ public class ArchonModule extends Module {
 		exec.getIP().reset();
 		if(decl!=null) {
 			if(decl.inputVars!=null) {
-				inputs = new InPort<?>[decl.inputVars.length];
+				inputs = new InPort.Int[decl.inputVars.length];
 				for(int i=0; i<decl.inputVars.length; i++) {
-					inputs[i] = new InPort<>(this);
+					inputs[i] = new InPort.Int(this);
 				}
 			}
 			if(decl.outputVars!=null) {
-				outputs = new OutPort<?>[decl.outputVars.length];
+				outputs = new OutPort.Int[decl.outputVars.length];
 				for(int i=0; i<decl.outputVars.length; i++) {
-					outputs[i] = new OutPort<>(this, 0);
+					outputs[i] = new OutPort.Int(this, 0);
 				}
 			}
 			if(decl.flagVars!=null) {
@@ -72,7 +72,7 @@ public class ArchonModule extends Module {
 	protected long update() {
 		if(decl!=null && decl.inputVars!=null) {
 			for(int i=0; i<decl.inputVars.length; i++) {
-				exec.getRouter().debugSetValue(decl.inputVars[i], inputs[i].getValue());
+				exec.getRouter().debugSetIntValue(decl.inputVars[i], inputs[i].getValue());
 			}
 		}
 		
@@ -88,12 +88,12 @@ public class ArchonModule extends Module {
 		
 		if(decl!=null && decl.outputVars!=null) {
 			for(int i=0; i<decl.outputVars.length; i++) {
-				outputs[i].value = exec.getRouter().debugGetValue(decl.outputVars[i]);
+				outputs[i].value = exec.getRouter().debugGetIntValue(decl.outputVars[i]);
 			}
 		}
 		if(decl!=null && decl.flagVars!=null) {
 			for(int i=0; i<decl.flagVars.length; i++) {
-				flags[i].value = ((Integer)exec.getRouter().debugGetValue(decl.outputVars[i]))!=0;
+				flags[i].value = ((Integer)exec.getRouter().debugGetIntValue(decl.outputVars[i]))!=0;
 			}
 		}
 		return 0L; // FIXME ArchOn module update delay

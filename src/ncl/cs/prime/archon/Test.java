@@ -16,9 +16,9 @@ public class Test {
 			int[] alu = arch.addModules(IntAlu.class, 2);
 			int r0 = arch.addModules(IntReg.class, 1)[0];
 			
-			router.debugSetValue(alu[0], 1);
-			router.debugSetValue(alu[1], 5);
-			router.debugSetValue(r0, 1);
+			router.debugSetIntValue(alu[0], 1);
+			router.debugSetIntValue(alu[1], 5);
+			router.debugSetIntValue(r0, 1);
 			
 			router.configure(alu[0], 1); // add
 			
@@ -31,8 +31,8 @@ public class Test {
 			
 //			for(int i=0; i<10; i++) {
 			while(!router.checkCondition(alu[1]+IntAlu.ZERO)) {
-				System.out.println(router.<Integer>debugGetValue(alu[0]));
-				System.out.println("\t\tc = " + router.<Integer>debugGetValue(alu[1]));
+				System.out.println(router.debugGetIntValue(alu[0]));
+				System.out.println("\t\tc = " + router.debugGetIntValue(alu[1]));
 				router.next();
 			}
 			

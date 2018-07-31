@@ -13,9 +13,8 @@ public class InPort<T> {
 		this.module = module;
 	}
 	
-	@SuppressWarnings("unchecked")
 	public void connect(OutPort<?> p) {
-		connection = (OutPort<T>) p;
+		connect(p, null, false);
 	}
 	
 	public Module getLinkedModule() {
@@ -67,6 +66,17 @@ public class InPort<T> {
 	
 	public T getValue() {
 		return value;
+	}
+	
+	public static class Int extends InPort<Integer> {
+		public Int(Module module) {
+			super(module);
+		}
+	}
+	public static class Bool extends InPort<Boolean> {
+		public Bool(Module module) {
+			super(module);
+		}
 	}
 	
 }

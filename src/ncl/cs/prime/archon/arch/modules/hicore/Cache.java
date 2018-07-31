@@ -27,10 +27,10 @@ public class Cache extends HiModule {
 	private double energyMiss = ENERGY_MISS;
 	private double leakage = LEAKAGE;
 
-	private InPort<Integer> req = new InPort<>(this);
-	private InPort<Integer> memAck = new InPort<>(this);
-	private OutPort<Integer> done = new OutPort<Integer>(this, null);
-	private OutPort<Integer> memReq = new OutPort<Integer>(this, null);
+	private InPort.Int req = new InPort.Int(this);
+	private InPort.Int memAck = new InPort.Int(this);
+	private OutPort.Int done = new OutPort.Int(this, null);
+	private OutPort.Int memReq = new OutPort.Int(this, null);
 
 	@Override
 	public void setup(String key, String value) {

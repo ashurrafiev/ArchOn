@@ -13,9 +13,9 @@ public class MasterNode extends Module {
 		return d;
 	}	
 	
-	private InPort<Integer> req = new InPort<>(this);
-	private InPort<Integer> link = new InPort<>(this);
-	private OutPort<Integer> done = new OutPort<Integer>(this, null);
+	private InPort.Int req = new InPort.Int(this);
+	private InPort.Int link = new InPort.Int(this);
+	private OutPort.Int done = new OutPort.Int(this, null);
 
 	@Override
 	protected InPort<?>[] initInputs() {

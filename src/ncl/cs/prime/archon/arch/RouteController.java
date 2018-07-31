@@ -1,5 +1,7 @@
 package ncl.cs.prime.archon.arch;
 
+import java.util.LinkedList;
+import java.util.Random;
 
 public class RouteController {
 
@@ -7,6 +9,8 @@ public class RouteController {
 	private Estimation est = null;
 	
 	public boolean syncNext = false;
+	public boolean randomOrder = false;
+	private static Random random = new Random();
 	
 	public RouteController(Architecture arch) {
 		this.arch = arch;
@@ -62,8 +66,22 @@ public class RouteController {
 	private void recompute() {
 		if(est!=null)
 			est.beginCycle();
-		for(Module m : arch.modules) {
-			m.recompute(est);
+		
+		if(randomOrder) {
+			LinkedList<Integer> indices = new LinkedList<>();
+			int n = arch.modules.size();
+			for(int i=0; i<n; i++)
+				indices.add(i);
+			while(n>0) {
+				int i = indices.remove(random.nextInt(n));
+				arch.modules.get(i).recompute(est);
+				n--;
+			}
+		}
+		else {
+			for(Module m : arch.modules) {
+				m.recompute(est);
+			}
 		}
 		if(syncNext)
 			arch.syncTime();
@@ -85,20 +103,18 @@ public class RouteController {
 		arch.getModuleById(destId).setup(keyValues);
 	}
 	
-	@SuppressWarnings("unchecked")
-	public <T> void debugSetValue(int destId, T value) {
+	public void debugSetIntValue(int destId, int v) {
 		Module module = arch.getModuleById(destId);
 		if(module==null) {
 			System.err.println("Warning: module "+((destId & Architecture.MODULE_MASK)>>8)+" is null");
 			return;
 		}
-		OutPort<T> port = ((OutPort<T>) module.getOutputs()[Architecture.portFromId(destId)]);
-		port.value = value;
+		OutPort<?> port = module.getOutputs()[Architecture.portFromId(destId)];
+		port.debugSetIntValue(v);
 	}
 	
-	@SuppressWarnings("unchecked")
-	public <T> T debugGetValue(int destId) {
-		return ((OutPort<T>) arch.getModuleById(destId).getOutputs()[Architecture.portFromId(destId)]).value; 
+	public int debugGetIntValue(int destId) {
+		return arch.getModuleById(destId).getOutputs()[Architecture.portFromId(destId)].debugGetIntValue(); 
 	}
 	
 }

@@ -17,8 +17,8 @@ public class ROM extends Module {
 		return d;
 	}
 	
-	protected InPort<Integer> addr = new InPort<>(this);
-	protected OutPort<Integer> out = new OutPort<Integer>(this, -1);
+	protected InPort.Int addr = new InPort.Int(this);
+	protected OutPort.Int out = new OutPort.Int(this, -1);
 	
 	@Override
 	protected InPort<?>[] initInputs() {

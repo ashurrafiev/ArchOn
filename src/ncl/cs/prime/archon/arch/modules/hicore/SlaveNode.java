@@ -24,9 +24,9 @@ public class SlaveNode extends HiModule {
 	private double energyHop = ENERGY_HOP;
 	private double leakage = LEAKAGE;
 	
-	private InPort<Integer> ack = new InPort<>(this);
-	private OutPort<Integer> memReq = new OutPort<Integer>(this, null);
-	private OutPort<Integer> link = new OutPort<Integer>(this, null);
+	private InPort.Int ack = new InPort.Int(this);
+	private OutPort.Int memReq = new OutPort.Int(this, null);
+	private OutPort.Int link = new OutPort.Int(this, null);
 
 	private int waiting = -1;
 	public int sender = -1;

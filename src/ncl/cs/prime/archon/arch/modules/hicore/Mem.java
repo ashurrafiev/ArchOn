@@ -72,8 +72,8 @@ public class Mem extends HiModule {
 		return req & 0x03;
 	}
 
-	private InPort<Integer> req = new InPort<>(this);
-	private OutPort<Integer> done = new OutPort<Integer>(this, null);
+	private InPort.Int req = new InPort.Int(this);
+	private OutPort.Int done = new OutPort.Int(this, null);
 
 	@Override
 	protected InPort<?>[] initInputs() {

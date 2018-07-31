@@ -20,9 +20,9 @@ public class Adder extends Module {
 		return d;
 	}
 	
-	protected InPort<Integer> x = new InPort<>(this);
-	protected InPort<Integer> y = new InPort<>(this);
-	protected OutPort<Integer> out = new OutPort<Integer>(this, -1);
+	protected InPort.Int x = new InPort.Int(this);
+	protected InPort.Int y = new InPort.Int(this);
+	protected OutPort.Int out = new OutPort.Int(this, -1);
 	
 	protected FlagOutPort z = new FlagOutPort(this);
 	

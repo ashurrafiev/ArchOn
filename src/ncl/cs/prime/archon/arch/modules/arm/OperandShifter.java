@@ -16,9 +16,9 @@ public class OperandShifter extends ArmModule {
 		return d;
 	}
 	
-	protected InPort<Integer> m = new InPort<>(this);
-	protected InPort<Integer> shift = new InPort<>(this);
-	protected OutPort<Integer> d = new OutPort<Integer>(this, -1);
+	protected InPort.Int m = new InPort.Int(this);
+	protected InPort.Int shift = new InPort.Int(this);
+	protected OutPort.Int d = new OutPort.Int(this, -1);
 	
 	@Override
 	protected InPort<?>[] initInputs() {

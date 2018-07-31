@@ -12,7 +12,7 @@ public class Const extends Module {
 		return d;
 	}
 	
-	protected OutPort<Integer> d = new OutPort<Integer>(this, 0);
+	protected OutPort.Int d = new OutPort.Int(this, 0);
 	
 	@Override
 	protected InPort<?>[] initInputs() {

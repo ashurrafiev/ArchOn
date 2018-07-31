@@ -15,8 +15,8 @@ public class Reg extends ArmModule {
 		return d;
 	}
 	
-	protected InPort<Integer> n = new InPort<>(this);
-	protected OutPort<Integer> d = new OutPort<Integer>(this, -1);
+	protected InPort.Int n = new InPort.Int(this);
+	protected OutPort.Int d = new OutPort.Int(this, -1);
 	
 	@Override
 	protected InPort<?>[] initInputs() {

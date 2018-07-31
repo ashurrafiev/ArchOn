@@ -7,7 +7,7 @@ import ncl.cs.prime.archon.arch.InPort;
 import ncl.cs.prime.archon.arch.Module;
 import ncl.cs.prime.archon.arch.OutPort;
 
-public class MMU<T, U> extends Module {
+public abstract class MMU<T, U> extends Module {
 
 	private Map<T, U> memory;
 	
@@ -19,10 +19,12 @@ public class MMU<T, U> extends Module {
 		address = new InPort<T>(this);
 		data = new InPort<U>(this);
 		
-		out = new OutPort<U>(this, defaultValue);
+		out = createOut(defaultValue);
 		
 		memory = new HashMap<T, U>();
 	}
+	
+	protected abstract OutPort<U> createOut(U defaultValue);
 	
 	@Override
 	public InPort<?>[] initInputs() {

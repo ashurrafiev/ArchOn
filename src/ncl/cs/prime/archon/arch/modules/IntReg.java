@@ -1,6 +1,7 @@
 package ncl.cs.prime.archon.arch.modules;
 
 import ncl.cs.prime.archon.arch.Module;
+import ncl.cs.prime.archon.arch.OutPort;
 
 public class IntReg extends Reg<Integer> {
 	
@@ -15,4 +16,8 @@ public class IntReg extends Reg<Integer> {
 		super(0);
 	}
 	
+	@Override
+	protected OutPort<Integer> createOut(Integer init) {
+		return new OutPort.Int(this, init);
+	}
 }

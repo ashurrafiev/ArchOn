@@ -2,6 +2,7 @@ package ncl.cs.prime.archon.arch.modules;
 
 import ncl.cs.prime.archon.arch.FlagOutPort;
 import ncl.cs.prime.archon.arch.Module;
+import ncl.cs.prime.archon.arch.OutPort;
 
 public class IntAlu extends Alu<Integer> {
 
@@ -11,6 +12,11 @@ public class IntAlu extends Alu<Integer> {
 	
 	public IntAlu() {
 		super(0);
+	}
+	
+	@Override
+	protected OutPort<Integer> createOut(Integer init) {
+		return new OutPort.Int(this, init);
 	}
 	
 	@Override

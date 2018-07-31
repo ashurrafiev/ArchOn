@@ -1,6 +1,7 @@
 package ncl.cs.prime.archon.arch.modules;
 
 import ncl.cs.prime.archon.arch.Module;
+import ncl.cs.prime.archon.arch.OutPort;
 
 
 public class IntMMU extends MMU<Integer, Integer> {
@@ -15,6 +16,11 @@ public class IntMMU extends MMU<Integer, Integer> {
 	
 	public IntMMU() {
 		super(-1);
+	}
+	
+	@Override
+	protected OutPort<Integer> createOut(Integer defaultValue) {
+		return new OutPort.Int(this, defaultValue);
 	}
 
 }

@@ -97,9 +97,9 @@ public class Mmu extends ArmModule {
 		sharedTime = 0L;
 	}
 	
-	protected InPort<Integer> in = new InPort<>(this);
-	protected InPort<Integer> addr = new InPort<>(this);
-	protected OutPort<Integer> out = new OutPort<Integer>(this, -1);
+	protected InPort.Int in = new InPort.Int(this);
+	protected InPort.Int addr = new InPort.Int(this);
+	protected OutPort.Int out = new OutPort.Int(this, -1);
 	
 	@Override
 	protected InPort<?>[] initInputs() {

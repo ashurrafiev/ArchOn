@@ -17,11 +17,14 @@ public class TestSim {
 	}
 	
 	public static void main(String[] args) {
-		File f;
-		if(args.length>0)
-			f = new File(args[0]);
-		else
-			f = new File("sample.sim");
+		File f = new File("sample.sim");
+		boolean randomOrder = false;
+		for(int i=0; i<args.length; i++) {
+			if("-ro".equals(args[i]))
+				randomOrder = true;
+			else
+				f = new File(args[i]);
+		}
 		
 		ProgramParserBytecode p = new ProgramParserBytecode();
 		if(p.compile(f, false)!=null) {
@@ -29,12 +32,10 @@ public class TestSim {
 			f = new File(f.getAbsolutePath()+".bin");
 			
 			CodeExecutor exec = new CodeExecutor();
+			exec.getRouter().randomOrder = randomOrder;
 			try {
 				exec.getIP().loadCode(f);
-				
 				simulate(exec);
-//				simulate(exec);
-				
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

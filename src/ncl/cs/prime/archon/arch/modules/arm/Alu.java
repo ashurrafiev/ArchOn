@@ -25,9 +25,9 @@ public class Alu extends ArmModule {
 		return d;
 	}
 	
-	protected InPort<Integer> n = new InPort<>(this);
-	protected InPort<Integer> m = new InPort<>(this);
-	protected OutPort<Integer> d = new OutPort<Integer>(this, -1);
+	protected InPort.Int n = new InPort.Int(this);
+	protected InPort.Int m = new InPort.Int(this);
+	protected OutPort.Int d = new OutPort.Int(this, -1);
 	
 	protected FlagOutPort fn = new FlagOutPort(this);
 	protected FlagOutPort fz = new FlagOutPort(this);

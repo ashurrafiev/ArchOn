@@ -180,7 +180,7 @@ public class CodeExecutor implements Instructions {
 				
 			case D_PRINT:
 				if(debug!=null)
-					debug.print(router.debugGetValue(ip.nextInt()));
+					debug.print(router.debugGetIntValue(ip.nextInt()));
 				else
 					ip.nextInt();
 				break;
@@ -202,7 +202,7 @@ public class CodeExecutor implements Instructions {
 				int srcId = ip.nextInt();
 				int value = ip.nextInt();
 				if(!isExtern(srcId))
-					router.debugSetValue(srcId, value);
+					router.debugSetIntValue(srcId, value);
 				break;
 			}
 			case D_PARAM_INT:
@@ -213,7 +213,7 @@ public class CodeExecutor implements Instructions {
 				if(params!=null && arg>=0 && arg<params.length)
 					value = params[arg];
 				if(!isExtern(srcId))
-					router.debugSetValue(srcId, value);
+					router.debugSetIntValue(srcId, value);
 				break;
 			}
 			

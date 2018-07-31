@@ -4,15 +4,17 @@ import ncl.cs.prime.archon.arch.InPort;
 import ncl.cs.prime.archon.arch.Module;
 import ncl.cs.prime.archon.arch.OutPort;
 
-public class Reg<T> extends Module {
+public abstract class Reg<T> extends Module {
 
 	private InPort<T> in;
 	private OutPort<T> out;
 	
 	public Reg(T init) {
 		in = new InPort<T>(this);
-		out = new OutPort<T>(this, init);
+		out = createOut(init);
 	}
+	
+	protected abstract OutPort<T> createOut(T init);
 	
 	@Override
 	public InPort<?>[] initInputs() {

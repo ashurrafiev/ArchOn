@@ -27,9 +27,9 @@ public class App extends HiModule {
 	
 	private int probs[] = new int[] {0, PROBABILITIES[OP_CPU], PROBABILITIES[OP_MEM_READ], PROBABILITIES[OP_MEM_WRITE]};
 	
-	private InPort<Integer> ack = new InPort<>(this);
-	private OutPort<Integer> op = new OutPort<Integer>(this, null);
-	private OutPort<Integer> counter = new OutPort<Integer>(this, -1);
+	private InPort.Int ack = new InPort.Int(this);
+	private OutPort.Int op = new OutPort.Int(this, null);
+	private OutPort.Int counter = new OutPort.Int(this, -1);
 	protected FlagOutPort done = new FlagOutPort(this);
 	
 	@Override

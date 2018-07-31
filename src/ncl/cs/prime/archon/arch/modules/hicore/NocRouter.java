@@ -30,13 +30,13 @@ public class NocRouter extends HiModule {
 	private double energyHop = ENERGY_HOP;
 	private double leakage = LEAKAGE;
 	
-	private InPort<Integer> req = new InPort<>(this);
-	private InPort<Integer> n = new InPort<>(this);
-	private InPort<Integer> s = new InPort<>(this);
-	private InPort<Integer> w = new InPort<>(this);
-	private InPort<Integer> e = new InPort<>(this);
-	private OutPort<Integer> done = new OutPort<Integer>(this, null);
-	private OutPort<Integer> link = new OutPort<Integer>(this, null);
+	private InPort.Int req = new InPort.Int(this);
+	private InPort.Int n = new InPort.Int(this);
+	private InPort.Int  s = new InPort.Int(this);
+	private InPort.Int w = new InPort.Int(this);
+	private InPort.Int e = new InPort.Int(this);
+	private OutPort.Int done = new OutPort.Int(this, null);
+	private OutPort.Int link = new OutPort.Int(this, null);
 
 	private class Packet implements Comparable<Packet> {
 		public long time;

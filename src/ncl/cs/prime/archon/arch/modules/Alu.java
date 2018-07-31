@@ -12,9 +12,10 @@ public abstract class Alu<T> extends Module {
 	protected OutPort<T> out;
 
 	public Alu(T init) {
-		out = new OutPort<>(this, init);
+		out = createOut(init);
 	}
 	
+	protected abstract OutPort<T> createOut(T init);
 	protected abstract T calc(int func, T x, T y);
 
 	@Override
