@@ -1,0 +1,45 @@
+#aliaspk "ncl.cs.prime.archon.arch.modules.tasks"
+
+#estim ".TaskEstimation"
+
+// Component definitions and parameters
+
+#assign User ".UserModel"
+#setup User "delay_mean:5000; delay_sdev: 1000; idle_power:0; battery:10"
+
+#assign UpdateRateService ".Task"
+#setup UpdateRateService "pre_delay:10; post_delay:5; power:1"
+
+#assign WebApplication ".Task"
+#setup WebApplication "pre_delay:45"
+
+// User request to UpdateRateService (synchronous)
+//UpdateRateService.req = User.req
+//User.ack = UpdateRateService.ack
+//#init UpdateRateService.ack 1
+
+// User request to UpdateRateService (asynchronous)
+UpdateRateService.req = User.req
+User.ack = User.req
+#init User.req 1
+
+// UpdateRateService - WebApplication interaction (synchronous)
+WebApplication.req = UpdateRateService.next_req
+UpdateRateService.next_ack = WebApplication.ack
+
+// WebApplication is the endpoint
+WebApplication.next_ack = WebApplication.next_req
+
+// Simulation cycles until battery depleted
+@loop
+!
+[^User.depleted] #jump @loop
+
+#estprint
+// Prints result:
+// (for synchronous)
+// Total time: 839133	User commands: 167	Mean response time: 60
+// (for asynchronous)
+// Total time: 919950	User commands: 182	Mean response time: 5
+
+!stop
