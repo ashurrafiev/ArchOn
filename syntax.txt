@@ -1,0 +1,121 @@
+Graph Assembly Language (sim script) Syntax
+
+Each line of the script contains label (optional), condition (optional) and one command.
+Line comment: everything after // is ignored.
+
+
+Labels:
+
+@label
+	(In the beginning of a line)
+	Create a label for jump commands, see !jump.
+
+	
+Conditions:
+
+[flag]
+	Condition. The following command is only executed if the flag is set.
+
+[!flag]
+	Inverse condition. The following command is only executed if the flag is unset.
+
+
+Nodes, ports and configurations:
+
+The behaviour of a node is implemented using Java class extending ncl.cs.prime.archon.arch.Module.
+Each node can have input and output ports, flag ports and configuration modes. These are reported using a static method Module.Declaration getDeclaration().
+
+A node's output port can be used as a source (src) for an arc:
+	node.out
+A node's input port can be used as a destination (dst) for an arc:
+	node.in
+If a node has only one input or only one output, it can be used implicitly:
+	node
+Flag ports are boolean output ports that can be used for conditional execution of commands and arcs:
+	node.flag
+	
+	
+Commands:
+	
+dst = src
+	Create arc from src to dst.
+
+dst =[flag] src
+	Create conditional arc from src to dst.
+
+dst =[^flag] src
+	Create conditional arc from src to dst with inverse condition.
+
+dst =X src
+	Remove arc from src to dst.
+
+node(conf)
+	Change node configuration; conf can be an integer number or an indentifier declared by the node class.
+
+!go
+	Execute one simulation step. Can be shortened to "!".
+
+!<number>
+	Execute given number of simulation steps.
+
+!jump @label
+	Continue execution from @label. Same as #jump.
+
+!x
+	Remove ALL arcs from the model.
+
+!gox
+	Execute one simulation step, then remove all arcs from the model. Shorthand for !go followed by !x.
+
+#print "string"
+	Output message (no newline).
+
+#print src
+	Prints the value of an _output_ port (no newline).
+	
+#print
+	Without parameter prints newline character.
+	Subsequent #print commands can be joined together using spaces, e.g. #print "x= " src1 ", y=" src2
+	
+#init src <integer>
+	Set (initialise) output port to a specific value. In the current version, only works with channels of Integer type.
+	
+#jump @label
+	Continue execution from @label. Same as !jump.
+
+#estim "className"
+	Set class for extra-functional property estimation (must implement ncl.cs.prime.archon.arch.Estimation interface).
+	
+#estprint
+	Makes estimation (set by #estim) print its current state.
+
+#nop
+	Nothing.
+	
+#aliaspk
+	Set base package for Java classes.
+
+#alias identifier "className"
+	Create a shorthand name (alias) for Java class. If the class name starts with "." it is looked up in the package set by #aliaspk.
+
+#assign node "className"
+	Create a node and link its implementation with Java class. If the class name starts with "." it is looked up in the package set by #aliaspk.
+
+#assign node alias
+	Create a node and link its implementation with Java class by its alias previously set by #alias command.
+
+#setup node "key:value; ..."
+	Set various node parameters as key-value pairs, specific to node's implementation.
+
+#free node
+	Remove node from the model.
+	
+
+Nested simulations (not used):
+
+!ack
+!begin
+#param <integer> src <integer>
+#syncall
+#archon ...
+#extern_...
