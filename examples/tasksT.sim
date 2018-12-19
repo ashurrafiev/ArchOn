@@ -1,0 +1,54 @@
+#aliaspk "ncl.cs.prime.archon.arch.modules.tasks"
+
+#estim ".TaskEstimation"
+
+#assign User ".UserModelT" // UserModelT.TASKS = 5
+// Template for 3 tasks and 2 dummies
+#setup User "delay_mean:5000; delay_sdev:1000; idle_power:0; battery:10; p_task1:0.333; p_task2:0.333; p_task3:0.333; p_task4:0.000; p_task5:0.000"
+
+// ------- TASK #1 -------
+
+#assign Task1 ".Task"
+#setup Task1 "pre_delay:0; post_delay:10; power:1"
+
+Task1.req = User.req1
+User.ack1 = Task1.ack
+
+Task1.next_ack = Task1.next_req
+
+// ------- TASK #2 -------
+
+#assign Task2 ".Task"
+#setup Task2 "pre_delay:0; post_delay:10; power:1"
+
+Task2.req = User.req2
+User.ack2 = Task2.ack
+
+Task2.next_ack = Task2.next_req
+
+// ------- TASK #3 -------
+
+#assign Task3 ".Task"
+#setup Task3 "pre_delay:0; post_delay:10; power:1"
+
+Task3.req = User.req3
+User.ack3 = Task3.ack
+
+Task3.next_ack = Task3.next_req
+
+// ------- DUMMY -------
+
+User.ack4 = User.req4
+
+// ------- DUMMY -------
+
+User.ack5 = User.req5
+
+
+// Simulation cycles until battery depleted
+@loop
+!
+[^User.depleted] #jump @loop
+
+#estprint
+!stop
