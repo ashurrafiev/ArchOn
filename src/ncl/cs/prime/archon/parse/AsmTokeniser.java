@@ -13,7 +13,7 @@ public class AsmTokeniser extends Tokeniser<AsmToken> {
 				Pattern.compile("\\-?\\d+"), // 4: number
 				Pattern.compile("\\\".*?\\\""), // 5: string
 				Pattern.compile("[\\!\\#@][A-Za-z0-9_]*"), // 6: directive or command 
-				Pattern.compile("[A-Za-z_][A-Za-z0-9_\\.]*"), // 7: identifier
+				Pattern.compile("[A-Za-z_][A-Za-z0-9_\\$\\.]*"), // 7: identifier
 				Pattern.compile("\\=X"), // 8: complex operators
 				Pattern.compile(".") // symbol
 			});

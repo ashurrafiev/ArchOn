@@ -34,19 +34,19 @@ public class UserModel1 extends Module {
 
 	@Override
 	public void setup(String key, String value) {
-		if("delay_mean".equals(key))
+		if("delayMean".equals(key))
 			delayMean = Long.parseLong(value);
-		else if("delay_sdev".equals(key))
+		else if("delaySDev".equals(key))
 			delaySDev = Long.parseLong(value);
-		else if("idle_power".equals(key))
+		else if("idlePower".equals(key))
 			idlePower = Double.parseDouble(value);
 		else if("battery".equals(key))
 			battery = Double.parseDouble(value);
-		else if("outer_delay_mean".equals(key))
+		else if("outerDelayMean".equals(key))
 			outerDelayMean = Long.parseLong(value);
-		else if("sleep_power".equals(key))
+		else if("sleepPower".equals(key))
 			sleepPower = Double.parseDouble(value);
-		else if("prob_out".equals(key))
+		else if("probOut".equals(key))
 			probOut = Double.parseDouble(value);
 	}
 

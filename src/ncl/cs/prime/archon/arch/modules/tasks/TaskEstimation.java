@@ -37,7 +37,8 @@ public class TaskEstimation implements Estimation {
 	@Override
 	public void dump() {
 		time = arch.syncTime();
-		System.out.printf("Total time: %d\tUser commands: %d\tMean response time: %d\n", time, numUserCommands, responseTime/numUserCommands);
+		System.out.printf("Total time: %d\tUser commands: %d\tMean response time: %d\n", time, numUserCommands,
+				numUserCommands==0 ? 0 : responseTime/numUserCommands);
 	}
 
 }

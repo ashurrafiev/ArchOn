@@ -9,8 +9,8 @@ public class Task extends Module {
 
 	public static Module.Declaration getDeclaration() {
 		Declaration d = new Declaration();
-		d.inputNames = new String[] {"req", "next_ack"};
-		d.outputNames = new String[] {"ack", "next_req"};
+		d.inputNames = new String[] {"req", "nextAck"};
+		d.outputNames = new String[] {"ack", "nextReq"};
 		return d;
 	}	
 
@@ -25,9 +25,9 @@ public class Task extends Module {
 
 	@Override
 	public void setup(String key, String value) {
-		if("pre_delay".equals(key))
+		if("preDelay".equals(key))
 			preDelay = Long.parseLong(value);
-		else if("post_delay".equals(key))
+		else if("postDelay".equals(key))
 			postDelay = Long.parseLong(value);
 		else if("power".equals(key))
 			power = Double.parseDouble(value);

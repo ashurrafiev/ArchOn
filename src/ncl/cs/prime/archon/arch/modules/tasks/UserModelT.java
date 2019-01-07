@@ -10,7 +10,7 @@ import ncl.cs.prime.archon.arch.OutPort;
 
 public class UserModelT extends Module {
 
-	public static final int TASKS = 5; 
+	public static final int TASKS = 20; 
 	
 	public static Module.Declaration getDeclaration() {
 		Declaration d = new Declaration();
@@ -40,21 +40,21 @@ public class UserModelT extends Module {
 
 	@Override
 	public void setup(String key, String value) {
-		if(key.startsWith("p_task")) {
-			int index = Integer.parseInt(key.substring(6, key.length()))-1;
+		if(key.startsWith("pTask")) {
+			int index = Integer.parseInt(key.substring(5, key.length()))-1;
 			pTask[index] = Double.parseDouble(value);
 		}
-		else if("delay_mean".equals(key))
+		else if("delayMean".equals(key))
 			delayMean = Long.parseLong(value);
-		else if("delay_sdev".equals(key))
+		else if("delaySDev".equals(key))
 			delaySDev = Long.parseLong(value);
-		else if("idle_power".equals(key))
+		else if("idlePower".equals(key))
 			idlePower = Double.parseDouble(value);
 		else if("battery".equals(key))
 			battery = Double.parseDouble(value);
-		else if("outer_delay_mean".equals(key))
+		else if("outerDelayMean".equals(key))
 			outerDelayMean = Long.parseLong(value);
-		else if("sleep_power".equals(key))
+		else if("sleepPower".equals(key))
 			sleepPower = Double.parseDouble(value);
 	}
 
@@ -128,6 +128,7 @@ public class UserModelT extends Module {
 			for(int i=0; i<TASKS; i++)
 				req[i].value = null;
 		}
+		
 		return t;
 	}
 	
@@ -159,7 +160,7 @@ public class UserModelT extends Module {
 		System.out.println("#assign User \".UserModelT\" // UserModelT.TASKS = "+TASKS);
 		System.out.printf("// Template for %d tasks and %d dummies\n", TASKS-dummies, dummies);
 		
-		StringBuilder setup = new StringBuilder("delay_mean:5000; delay_sdev:1000; idle_power:0; battery:10");
+		StringBuilder setup = new StringBuilder("delayMean:5000; delaySDev:1000; idlePower:0; battery:10");
 		for(int i=1; i<=TASKS; i++) {
 			setup.append(String.format("; p_task%d:%.3f", i,
 					(i > TASKS-dummies) ? 0.0 : 1.0/(double)(TASKS-dummies)));
@@ -180,14 +181,14 @@ public class UserModelT extends Module {
 				System.out.println();
 				
 				System.out.printf("#assign Task%d \".Task\"\n", i);
-				System.out.printf("#setup Task%d \"pre_delay:0; post_delay:10; power:1\"\n", i);
+				System.out.printf("#setup Task%d \"preDelay:0; postDelay:10; power:1\"\n", i);
 				System.out.println();
 				
 				System.out.printf("Task%d.req = User.req%d\n", i, i);
 				System.out.printf("User.ack%d = Task%d.ack\n", i, i);
 				System.out.println();
 				
-				System.out.printf("Task%d.next_ack = Task%d.next_req\n", i, i);
+				System.out.printf("Task%d.nextAck = Task%d.nextReq\n", i, i);
 				System.out.println();
 			}
 		}
