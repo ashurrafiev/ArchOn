@@ -18,10 +18,10 @@ public class Task extends Module {
 	public long preDelay = 0L;
 	public long postDelay = 0L;
 	
-	private InPort.Int req = new InPort.Int(this);
-	private OutPort.Int ack = new OutPort.Int(this, null);
-	private OutPort.Int nextReq = new OutPort.Int(this, null);
-	private InPort.Int nextAck = new InPort.Int(this);
+	protected InPort.Int req = new InPort.Int(this);
+	protected OutPort.Int ack = new OutPort.Int(this, null);
+	protected OutPort.Int nextReq = new OutPort.Int(this, null);
+	protected InPort.Int nextAck = new InPort.Int(this);
 
 	@Override
 	public void setup(String key, String value) {
