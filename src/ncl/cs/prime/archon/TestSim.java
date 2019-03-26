@@ -19,9 +19,12 @@ public class TestSim {
 	public static void main(String[] args) {
 		File f = new File("sample.sim");
 		boolean randomOrder = false;
+		boolean timeOrder = false;
 		for(int i=0; i<args.length; i++) {
 			if("-ro".equals(args[i]))
 				randomOrder = true;
+			else if("-to".equals(args[i]))
+				timeOrder = true;
 			else
 				f = new File(args[i]);
 		}
@@ -33,6 +36,7 @@ public class TestSim {
 			
 			CodeExecutor exec = new CodeExecutor();
 			exec.getRouter().randomOrder = randomOrder;
+			exec.getRouter().timeOrder = timeOrder;
 			try {
 				exec.getIP().loadCode(f);
 				simulate(exec);

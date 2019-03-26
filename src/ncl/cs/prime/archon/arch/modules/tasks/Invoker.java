@@ -1,16 +1,16 @@
 package ncl.cs.prime.archon.arch.modules.tasks;
 
-import ncl.cs.prime.archon.arch.Estimation;
 import ncl.cs.prime.archon.arch.InPort;
 import ncl.cs.prime.archon.arch.Module;
 import ncl.cs.prime.archon.arch.OutPort;
 
-public class Invoker extends Module {
+public class Invoker extends FinishableModule {
 
 	public static Module.Declaration getDeclaration() {
 		Declaration d = new Declaration();
 		d.inputNames = new String[] {"ack"};
 		d.outputNames = new String[] {"req"};
+		d.flagNames = new String[] {"finished"};
 		return d;
 	}
 
@@ -23,6 +23,8 @@ public class Invoker extends Module {
 	public void setup(String key, String value) {
 		if("period".equals(key))
 			period = Long.parseLong(value);
+		else
+			super.setup(key, value);
 	}
 
 	@Override
@@ -35,15 +37,10 @@ public class Invoker extends Module {
 		return new OutPort<?>[] {req};
 	}
 
-	@Override
-	protected long update() {
-		return 0;
-	}
-	
 	protected long reqTime = 0L;
 	
 	@Override
-	protected long update(Estimation est) {
+	protected long updateLive(TaskEstimation e) {
 		long t = 0L;
 		if(ack.getValue()!=null && ack.getValue()!=0 || reqTime==0L) {
 			req.value = 1;

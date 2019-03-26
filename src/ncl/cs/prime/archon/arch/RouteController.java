@@ -10,6 +10,7 @@ public class RouteController {
 	
 	public boolean syncNext = false;
 	public boolean randomOrder = false;
+	public boolean timeOrder = false;
 	private static Random random = new Random();
 	
 	public RouteController(Architecture arch) {
@@ -76,6 +77,17 @@ public class RouteController {
 				int i = indices.remove(random.nextInt(n));
 				arch.modules.get(i).recompute(est);
 				n--;
+			}
+		}
+		else if(timeOrder) {
+			long min = -1L;
+			for(Module m : arch.modules) {
+				if(m.getTime()<min || min<0)
+					min = m.getTime();
+			}
+			for(Module m : arch.modules) {
+				if(m.getTime()==min)
+					m.recompute(est);
 			}
 		}
 		else {

@@ -15,7 +15,7 @@ public class TaskEstimation implements Estimation {
 	@Override
 	public void init(Architecture arch) {
 		this.arch = arch;
-		this.battery = 100.0;
+		this.battery = 0.0;
 		this.numUserCommands = 0;
 		this.responseTime = 0;
 	}
@@ -37,8 +37,9 @@ public class TaskEstimation implements Estimation {
 	@Override
 	public void dump() {
 		time = arch.syncTime();
-		System.out.printf("Total time: %d\tUser commands: %d\tMean response time: %d\n", time, numUserCommands,
-				numUserCommands==0 ? 0 : responseTime/numUserCommands);
+		String tstr = String.format("%dh %dmin %ds", time/1000L/3600L, (time/1000L/60L)%60L, (time/1000L)%60L);
+		System.out.printf("Total time: %d (%s)\nUser commands: %d\nMean response time: %d ms\nBattery:%.3f Ws\n", time, tstr, numUserCommands,
+				numUserCommands==0 ? 0 : responseTime/numUserCommands, battery);
 	}
 
 }

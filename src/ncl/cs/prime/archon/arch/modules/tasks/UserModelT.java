@@ -2,15 +2,13 @@ package ncl.cs.prime.archon.arch.modules.tasks;
 
 import java.util.Random;
 
-import ncl.cs.prime.archon.arch.Estimation;
-import ncl.cs.prime.archon.arch.FlagOutPort;
 import ncl.cs.prime.archon.arch.InPort;
 import ncl.cs.prime.archon.arch.Module;
 import ncl.cs.prime.archon.arch.OutPort;
 
-public class UserModelT extends Module {
+public class UserModelT extends FinishableModule {
 
-	public static final int TASKS = 20; 
+	public static final int TASKS = 20;
 	
 	public static Module.Declaration getDeclaration() {
 		Declaration d = new Declaration();
@@ -20,13 +18,12 @@ public class UserModelT extends Module {
 			d.inputNames[i] = "ack"+(i+1);
 			d.outputNames[i] = "req"+(i+1);
 		}
-		d.flagNames = new String[] {"depleted"};
+		d.flagNames = new String[] {"finished"};
 		return d;
 	}
 
 	private static final Random RANDOM = new Random();
 	
-	public double battery = 10.0;
 	public double idlePower = 0;
 	public double sleepPower = 0;
 	public long outerDelayMean = 0L;
@@ -36,7 +33,6 @@ public class UserModelT extends Module {
 
 	private OutPort.Int[] req;
 	private InPort.Int[] ack;
-	protected FlagOutPort depleted = new FlagOutPort(this);
 
 	@Override
 	public void setup(String key, String value) {
@@ -50,12 +46,12 @@ public class UserModelT extends Module {
 			delaySDev = Long.parseLong(value);
 		else if("idlePower".equals(key))
 			idlePower = Double.parseDouble(value);
-		else if("battery".equals(key))
-			battery = Double.parseDouble(value);
 		else if("outerDelayMean".equals(key))
 			outerDelayMean = Long.parseLong(value);
 		else if("sleepPower".equals(key))
 			sleepPower = Double.parseDouble(value);
+		else
+			super.setup(key, value);
 	}
 
 	@Override
@@ -74,20 +70,11 @@ public class UserModelT extends Module {
 		return req;
 	}
 
-	@Override
-	protected FlagOutPort[] initFlags() {
-		return new FlagOutPort[] {depleted};
-	}
-
-	@Override
-	protected long update() {
-		return 0;
-	}
-	
 	protected long reqTime = 0L;
 	
 	protected long getDelay() {
-		return (long)(RANDOM.nextGaussian()*delaySDev + delayMean);
+		long t = (long)(RANDOM.nextGaussian()*delaySDev + delayMean);
+		return t>=0L ? t : 0L;
 	}
 	
 	protected long getOuterDelay() {
@@ -95,9 +82,7 @@ public class UserModelT extends Module {
 	}
 	
 	@Override
-	protected long update(Estimation est) {
-		TaskEstimation e = (TaskEstimation) est;
-		
+	protected long updateLive(TaskEstimation e) {
 		long t = 0L;
 		
 		boolean ackAny = false;
@@ -108,21 +93,17 @@ public class UserModelT extends Module {
 		if(ackAny || reqTime==0L) {
 			if(getTime()>0)
 				e.addResponse(getTime() - reqTime);
-			else
-				e.battery = battery;
-			depleted.value = e.battery<=0;
-			if(!depleted.value) {
-				int task = reqTime>0L ? weightedRandom(RANDOM, pTask) : 0;
-				req[task].value = 1;
-				t = getDelay();
-				e.battery -= idlePower * t / 1000.0;
-				if(task==0) {
-					long st = getOuterDelay();
-					e.battery -= sleepPower * st / 1000.0;
-					t += st;
-				}
-				reqTime = getTime()+t;
+
+			int task = reqTime>0L ? weightedRandom(RANDOM, pTask) : 0;
+			req[task].value = 1;
+			t = getDelay();
+			e.battery -= idlePower * t / 1000.0;
+			if(task==0) {
+				long st = getOuterDelay();
+				e.battery -= sleepPower * st / 1000.0;
+				t += st;
 			}
+			reqTime = getTime()+t;
 		}
 		else {
 			for(int i=0; i<TASKS; i++)
