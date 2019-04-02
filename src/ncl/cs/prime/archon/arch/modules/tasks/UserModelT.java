@@ -47,7 +47,7 @@ public class UserModelT extends FinishableModule {
 		else if("idlePower".equals(key))
 			idlePower = Double.parseDouble(value);
 		else if("outerDelayMean".equals(key))
-			outerDelayMean = Long.parseLong(value);
+			outerDelayMean = Long.parseLong(value)*1000L;
 		else if("sleepPower".equals(key))
 			sleepPower = Double.parseDouble(value);
 		else
@@ -78,7 +78,7 @@ public class UserModelT extends FinishableModule {
 	}
 	
 	protected long getOuterDelay() {
-		return outerDelayMean>0 ? (long)Math.log(1-RANDOM.nextDouble())/(-outerDelayMean) : 0L;
+		return outerDelayMean>0 ? (long)(Math.log(1-RANDOM.nextDouble())/(-1.0/(double)outerDelayMean)) : 0L;
 	}
 	
 	@Override
