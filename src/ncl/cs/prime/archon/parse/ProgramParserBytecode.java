@@ -500,6 +500,9 @@ public class ProgramParserBytecode extends BytecodeWriter implements Instruction
 				write(I_ASSIGN);
 				write(id);
 				writeInt(var.id);
+				write(D_NAME);
+				writeInt(var.id);
+				writeString(name);
 				next();
 			}
 			else {

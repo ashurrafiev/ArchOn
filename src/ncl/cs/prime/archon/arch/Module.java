@@ -18,6 +18,8 @@ public abstract class Module {
 	
 	protected int config = 0;
 	
+	protected String name = "";
+	
 	protected abstract InPort<?>[] initInputs();
 	protected abstract OutPort<?>[] initOutputs();
 	protected abstract long update();
@@ -35,6 +37,14 @@ public abstract class Module {
 			String[] s = p.split("\\s*[\\:\\=]\\s*", 2);
 			setup(s[0], s.length<2 ? null : s[1]);
 		}
+	}
+	
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	public String getName() {
+		return name;
 	}
 	
 	public void initPorts() {

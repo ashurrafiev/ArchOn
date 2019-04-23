@@ -223,7 +223,14 @@ public class CodeExecutor implements Instructions {
 				router.setup(var, ip.nextString());
 				break;
 			}
-			
+
+			case D_NAME:
+			{
+				int var = ip.nextInt();
+				router.nameModule(var, ip.nextString());
+				break;
+			}
+
 			case I_UNLINK:
 				router.disconnect(ip.nextInt());
 				break;

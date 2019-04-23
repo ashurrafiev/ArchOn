@@ -67,7 +67,7 @@ public class Handler extends Module {
 			t = delay;
 		}
 		
-		e.battery -= power * t / 1000.0;
+		e.useEnergy(name, power * t / 1000.0);
 		return t;
 	}
 

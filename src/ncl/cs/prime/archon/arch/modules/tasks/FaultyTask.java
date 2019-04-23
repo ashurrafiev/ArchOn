@@ -65,7 +65,7 @@ public class FaultyTask extends Task {
 				ex.value = exId+1;
 				
 				long t = preDelay;
-				e.battery -= power * t / 1000.0;
+				e.useEnergy(name, power * t / 1000.0);
 				return t;
 			}
 		}

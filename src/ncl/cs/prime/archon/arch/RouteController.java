@@ -114,7 +114,11 @@ public class RouteController {
 	public void setup(int destId, String keyValues) {
 		arch.getModuleById(destId).setup(keyValues);
 	}
-	
+
+	public void nameModule(int destId, String name) {
+		arch.getModuleById(destId).setName(name);
+	}
+
 	public void debugSetIntValue(int destId, int v) {
 		Module module = arch.getModuleById(destId);
 		if(module==null) {
