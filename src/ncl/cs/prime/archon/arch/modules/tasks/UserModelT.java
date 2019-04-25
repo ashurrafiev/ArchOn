@@ -113,6 +113,12 @@ public class UserModelT extends FinishableModule {
 		return t;
 	}
 	
+	@Override
+	protected void updateFinished() {
+		for(int i=0; i<TASKS; i++)
+			req[i].value = null;
+	}
+	
 	public static int weightedRandom(Random random, double[] w) {
 		double max = 0;
 		for(int i = 0; i < w.length; i++)

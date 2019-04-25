@@ -63,6 +63,7 @@ public class FaultyTask extends Task {
 			if(exId>=0) {
 				nextReq.value = null;
 				ex.value = exId+1;
+				e.countException(name, ex.value);
 				
 				long t = preDelay;
 				e.useEnergy(name, power * t / 1000.0);

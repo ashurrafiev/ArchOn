@@ -71,12 +71,13 @@ public class Task extends Module {
 			}
 		}
 		else {
+			//e.countException(name, 0);
 			ack.value = null;
 			nextReq.value = sendValue(req.getValue());
 			t = preDelay;
 			sendTime = getTime()+t;
 		}
-		
+
 		e.useEnergy(name, power * t / 1000.0);
 		return t;
 	}

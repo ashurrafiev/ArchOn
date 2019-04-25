@@ -51,5 +51,10 @@ public class Invoker extends FinishableModule {
 			req.value = null;
 		return t;
 	}
+	
+	@Override
+	protected void updateFinished() {
+		req.value = null;
+	}
 
 }

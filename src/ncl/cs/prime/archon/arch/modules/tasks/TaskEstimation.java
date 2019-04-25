@@ -17,6 +17,9 @@ public class TaskEstimation implements Estimation {
 	private double energy;
 	private HashMap<String, Double> energyPerModule = new HashMap<>();
 
+	private int exceptions;
+	private HashMap<String, Integer> exceptionsPerModule = new HashMap<>();
+	
 	@Override
 	public void init(Architecture arch) {
 		this.arch = arch;
@@ -25,6 +28,8 @@ public class TaskEstimation implements Estimation {
 		
 		this.energy = 0.0;
 		this.energyPerModule.clear();
+		this.exceptions = 0;
+		this.exceptionsPerModule.clear();
 	}
 
 	@Override
@@ -39,7 +44,7 @@ public class TaskEstimation implements Estimation {
 		numUserCommands++;
 		responseTime += time;
 	}
-	
+
 	public void useEnergy(String name, double e) {
 		energy += e;
 		Double e0 = energyPerModule.get(name);
@@ -48,17 +53,47 @@ public class TaskEstimation implements Estimation {
 		energyPerModule.put(name, e);
 	}
 	
+	public void countException(String name, int ex) {
+		exceptions++;
+		String key = String.format("%s (ex%d)", name, ex);
+		Integer c0 = exceptionsPerModule.get(key);
+		int c = (c0!=null) ? c0+1 : 1;
+		exceptionsPerModule.put(key, c);
+	}
+	
 	@Override
 	public void dump() {
 		time = arch.syncTime();
 		String tstr = String.format("%dh %dmin %ds", time/1000L/3600L, (time/1000L/60L)%60L, (time/1000L)%60L);
-		System.out.printf("Total time: %d (%s)\nUser commands: %d\nMean response time: %d ms\nTotal energy: %.3f Ws\n\n", time, tstr, numUserCommands,
-				numUserCommands==0 ? 0 : responseTime/numUserCommands, energy);
+		System.out.printf("{\n\"Total time\": %d,\n"
+				+ "\"Total time (str)\": \"%s\",\n"
+				+ "\"User commands\": %d,\n"
+				+ "\"Mean response time\": %d,\n"
+				+ "\"Total energy\": %.3f,\n"
+				+ "\"Total exceptions\": %d,\n",
+				time, tstr, numUserCommands,
+				numUserCommands==0 ? 0 : responseTime/numUserCommands,
+				energy, exceptions
+			);
 		
-		System.out.println("Energy per component:\n");
+		System.out.println("\n\"Energy per component\": {");
+		boolean first = true;
 		for(Entry<String, Double> e : energyPerModule.entrySet()) {
-			System.out.printf("%s: %.3f\n", e.getKey(), e.getValue());
+			if(!first)
+				System.out.println(",");
+			first = false;
+			System.out.printf("\t\"%s\": %.3f", e.getKey(), e.getValue());
 		}
+		System.out.println("\n},");
+		System.out.println("\n\"Exceptions per component\": {");
+		first = true;
+		for(Entry<String, Integer> e : exceptionsPerModule.entrySet()) {
+			if(!first)
+				System.out.println(",");
+			first = false;
+			System.out.printf("\t\"%s\": %d", e.getKey(), e.getValue());
+		}
+		System.out.println("\n}\n}");
 	}
 
 }

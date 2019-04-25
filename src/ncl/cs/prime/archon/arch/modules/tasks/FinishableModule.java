@@ -32,6 +32,7 @@ public abstract class FinishableModule extends Module {
 		
 		if(getTime()>=simulate) {
 			finished.value = true;
+			updateFinished();
 			return 0L;
 		}
 		else {
@@ -41,5 +42,6 @@ public abstract class FinishableModule extends Module {
 	}
 	
 	protected abstract long updateLive(TaskEstimation e);
+	protected abstract void updateFinished();
 
 }
