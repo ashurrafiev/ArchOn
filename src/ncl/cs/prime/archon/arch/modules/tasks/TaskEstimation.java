@@ -19,7 +19,9 @@ public class TaskEstimation implements Estimation {
 
 	private int exceptions;
 	private HashMap<String, Integer> exceptionsPerModule = new HashMap<>();
-	
+
+	private HashMap<String, Integer> callsPerType = new HashMap<>();
+
 	@Override
 	public void init(Architecture arch) {
 		this.arch = arch;
@@ -30,6 +32,7 @@ public class TaskEstimation implements Estimation {
 		this.energyPerModule.clear();
 		this.exceptions = 0;
 		this.exceptionsPerModule.clear();
+		this.callsPerType.clear();
 	}
 
 	@Override
@@ -61,6 +64,14 @@ public class TaskEstimation implements Estimation {
 		exceptionsPerModule.put(key, c);
 	}
 	
+	public void countTaskType(String type) {
+		if(type==null || type.isEmpty())
+			return;
+		Integer c0 = callsPerType.get(type);
+		int c = (c0!=null) ? c0+1 : 1;
+		callsPerType.put(type, c);
+	}
+	
 	@Override
 	public void dump() {
 		time = arch.syncTime();
@@ -85,6 +96,17 @@ public class TaskEstimation implements Estimation {
 			System.out.printf("\t\"%s\": %.3f", e.getKey(), e.getValue());
 		}
 		System.out.println("\n},");
+		
+		System.out.println("\n\"Calls per task type\": {");
+		first = true;
+		for(Entry<String, Integer> e : callsPerType.entrySet()) {
+			if(!first)
+				System.out.println(",");
+			first = false;
+			System.out.printf("\t\"%s\": %d", e.getKey(), e.getValue());
+		}
+		System.out.println("\n},");
+		
 		System.out.println("\n\"Exceptions per component\": {");
 		first = true;
 		for(Entry<String, Integer> e : exceptionsPerModule.entrySet()) {

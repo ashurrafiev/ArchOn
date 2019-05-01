@@ -5,7 +5,7 @@ import ncl.cs.prime.archon.arch.InPort;
 import ncl.cs.prime.archon.arch.Module;
 import ncl.cs.prime.archon.arch.OutPort;
 
-public class Handler extends Module {
+public class Catch extends Module {
 
 	public static final int EXCEPTIONS = 20; 
 
@@ -14,7 +14,7 @@ public class Handler extends Module {
 		d.inputNames = new String[] {"ex"};
 		d.outputNames = new String[EXCEPTIONS];
 		for(int i=0; i<EXCEPTIONS; i++) {
-			d.outputNames[i] = "handle"+(i+1);
+			d.outputNames[i] = "catch"+(i+1);
 		}
 		return d;
 	}	

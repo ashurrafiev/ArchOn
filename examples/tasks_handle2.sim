@@ -1,0 +1,71 @@
+#aliaspk "ncl.cs.prime.archon.arch.modules.tasks"
+#estim ".TaskEstimation"
+
+
+#assign User ".UserModelT"
+#setup User "simulate: 3600; delayMean:5000; delaySDev:1000; idlePower:0; pTask1:0.75; pTask2:0.25"
+
+// ------- TASK #1 -------
+
+#assign Task1 ".FaultyTask"
+#setup Task1 "preDelay:10; postDelay:0; power:1; pEx1:0.2"
+
+#assign Catch1 ".Catch"
+#setup Catch1 "delay:0; power:0"
+
+#assign Task1HandleEx1 ".Task"
+#setup Task1HandleEx1 "type:log; preDelay:10; postDelay:0; power:1"
+
+#assign MergeTask1HandleEx1 ".MergeAck"
+
+Task1.req = User.req1
+MergeTask1HandleEx1.ack1 = Task1.ack
+User.ack1 = MergeTask1HandleEx1.ack
+
+Task1.nextAck = Task1.nextReq
+Catch1.ex = Task1.ex
+
+Task1HandleEx1.req = Catch1.catch1
+Task1HandleEx1.nextAck = Task1HandleEx1.nextReq
+
+MergeTask1HandleEx1.ack2 = Task1HandleEx1.nextReq
+
+// ------- TASK #2 -------
+
+#assign Task2 ".FaultyTask"
+#setup Task2 "preDelay:10; postDelay:0; power:1; pEx1:0.1; pEx2:0.2"
+
+#assign Catch2 ".Catch"
+#setup Catch2 "delay:0; power:0"
+
+#assign Task2HandleEx1 ".Task"
+#setup Task2HandleEx1 "type:log; preDelay:10; postDelay:0; power:1"
+#assign Task2HandleEx2 ".Task"
+#setup Task2HandleEx2 "type:sillydance; preDelay:10000; postDelay:0; power:5"
+
+#assign MergeTask2HandleEx1 ".MergeAck"
+#assign MergeTask2HandleEx2 ".MergeAck"
+
+Task2.req = User.req2
+MergeTask2HandleEx1.ack1 = Task2.ack
+User.ack2 = MergeTask2HandleEx2.ack
+
+Task2.nextAck = Task2.nextReq
+Catch2.ex = Task2.ex
+
+Task2HandleEx1.req = Catch2.catch1
+Task2HandleEx1.nextAck = Task2HandleEx1.nextReq
+Task2HandleEx2.req = Catch2.catch2
+Task2HandleEx2.nextAck = Task2HandleEx2.nextReq
+
+MergeTask2HandleEx1.ack2 = Task2HandleEx1.nextReq
+MergeTask2HandleEx2.ack1 = MergeTask2HandleEx1.ack
+MergeTask2HandleEx2.ack2 = Task2HandleEx2.nextReq
+
+
+@loop
+!
+[^User.finished] #jump @loop
+
+#estprint
+!stop

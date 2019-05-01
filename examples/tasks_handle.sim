@@ -3,25 +3,25 @@
 
 
 #assign User ".UserModelT"
-#setup User "delayMean:5000; delaySDev:1000; idlePower:0; battery:50; pTask1:0; pTask2:0; pTask3:1"
+#setup User "simulate: 3600; delayMean:5000; delaySDev:1000; idlePower:0; pTask1:0; pTask2:0; pTask3:1"
 
 // ------- TASK #1 -------
 
 #assign Task1 ".FaultyTask"
 #setup Task1 "preDelay:10; postDelay:90; power:1; pEx1:0.2"
 
-#assign Handler1 ".Handler"
-#setup Handler1 "delay:40; power:5"
+#assign Catch1 ".Catch"
+#setup Catch1 "delay:40; power:5"
 
-#assign MergeTask1Handler1 ".MergeAck"
+#assign MergeTask1Catch1 ".MergeAck"
 
 Task1.req = User.req1
-MergeTask1Handler1.ack1 = Task1.ack
-User.ack1 = MergeTask1Handler1.ack
+MergeTask1Catch1.ack1 = Task1.ack
+User.ack1 = MergeTask1Catch1.ack
 
 Task1.nextAck = Task1.nextReq
-Handler1.ex = Task1.ex
-MergeTask1Handler1.ack2 = Handler1.handle1
+Catch1.ex = Task1.ex
+MergeTask1Catch1.ack2 = Catch1.catch1
 
 // ------- TASK #2 -------
 
@@ -30,8 +30,8 @@ MergeTask1Handler1.ack2 = Handler1.handle1
 #assign Task2 ".FaultyTask"
 #setup Task2 "preDelay:10; postDelay:90; power:1; pEx1:0.2"
 
-#assign Handler2 ".Handler"
-#setup Handler2 "delay:40; power:5"
+#assign Catch2 ".Catch"
+#setup Catch2 "delay:40; power:5"
 
 Retry2.req = User.req2
 User.ack2 = User.req2 // asynchronous
@@ -40,8 +40,8 @@ Task2.req = Retry2.nextReq
 Retry2.nextAck = Task2.ack
 
 Task2.nextAck = Task2.nextReq
-Handler2.ex = Task2.ex
-Retry2.retry = Handler2.handle1
+Catch2.ex = Task2.ex
+Retry2.retry = Catch2.catch1
 
 // ------- TASK #3 -------
 
@@ -50,35 +50,34 @@ Retry2.retry = Handler2.handle1
 #assign Task3 ".FaultyTask"
 #setup Task3 "preDelay:10; postDelay:90; power:1; pEx1:0.2; pEx2:0.2"
 
-#assign Handler3 ".Handler"
-#setup Handler3 "delay:40; power:5"
+#assign Catch3 ".Catch"
+#setup Catch3 "delay:40; power:5"
 
 #assign SaveState ".Task"
 #setup SaveState "preDelay:200; postDelay:0; power:1"
 
-#assign MergeTask3Handler3 ".MergeAck"
+#assign MergeTask3Catch3 ".MergeAck"
 
 Retry3.req = User.req3
-MergeTask3Handler3.ack1 = Retry3.ack
-User.ack3 = MergeTask3Handler3.ack
+MergeTask3Catch3.ack1 = Retry3.ack
+User.ack3 = MergeTask3Catch3.ack
 
 Task3.req = Retry3.nextReq
 Retry3.nextAck = Task3.ack
 
 Task3.nextAck = Task3.nextReq
-Handler3.ex = Task3.ex
-Retry3.retry = Handler3.handle1
+Catch3.ex = Task3.ex
+Retry3.retry = Catch3.catch1
 
-SaveState.req = Handler3.handle2
+SaveState.req = Catch3.catch2
 SaveState.nextAck = SaveState.nextReq
-MergeTask3Handler3.ack2 = SaveState.nextReq
+MergeTask3Catch3.ack2 = SaveState.nextReq
 
 
 
-// Simulation cycles until battery depleted
 @loop
 !
-[^User.depleted] #jump @loop
+[^User.finished] #jump @loop
 
 #estprint
 !stop

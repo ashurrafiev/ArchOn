@@ -16,7 +16,7 @@ public class FaultyTask extends Task {
 		return d;
 	}
 	
-	public double pEx[] = new double[Handler.EXCEPTIONS];
+	public double pEx[] = new double[Catch.EXCEPTIONS];
 	
 	protected OutPort.Int ex = new OutPort.Int(this, null);
 	
@@ -44,7 +44,7 @@ public class FaultyTask extends Task {
 	
 	private int injectException() {
 		double x = RANDOM.nextDouble();
-		for(int i=0; i<Handler.EXCEPTIONS; i++) {
+		for(int i=0; i<Catch.EXCEPTIONS; i++) {
 			if(x<pEx[i])
 				return i;
 			else

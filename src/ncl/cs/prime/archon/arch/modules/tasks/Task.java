@@ -14,6 +14,8 @@ public class Task extends Module {
 		return d;
 	}	
 
+	public String taskType = null;
+	
 	public double power = 1f;
 	public long preDelay = 0L;
 	public long postDelay = 0L;
@@ -31,6 +33,8 @@ public class Task extends Module {
 			postDelay = Long.parseLong(value);
 		else if("power".equals(key))
 			power = Double.parseDouble(value);
+		else if("type".equals(key))
+			taskType = value.trim().toLowerCase();
 	}
 
 	@Override
@@ -72,6 +76,7 @@ public class Task extends Module {
 		}
 		else {
 			//e.countException(name, 0);
+			e.countTaskType(taskType);
 			ack.value = null;
 			nextReq.value = sendValue(req.getValue());
 			t = preDelay;
