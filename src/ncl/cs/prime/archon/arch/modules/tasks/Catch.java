@@ -67,7 +67,7 @@ public class Catch extends Module {
 			t = delay;
 		}
 		
-		e.useEnergy(name, power * t / 1000.0);
+		e.useEnergy(name, false, power * t / 1000.0);
 		return t;
 	}
 

@@ -83,7 +83,7 @@ public class Task extends Module {
 			sendTime = getTime()+t;
 		}
 
-		e.useEnergy(name, power * t / 1000.0);
+		e.useEnergy(name, true, power * t / 1000.0);
 		return t;
 	}
 

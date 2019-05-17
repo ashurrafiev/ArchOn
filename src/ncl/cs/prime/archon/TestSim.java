@@ -39,7 +39,9 @@ public class TestSim {
 			exec.getRouter().timeOrder = timeOrder;
 			try {
 				exec.getIP().loadCode(f);
+				long t = System.currentTimeMillis();
 				simulate(exec);
+				System.out.printf("Done in %d ms", System.currentTimeMillis() - t);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

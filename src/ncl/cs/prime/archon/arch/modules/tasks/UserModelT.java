@@ -97,10 +97,10 @@ public class UserModelT extends FinishableModule {
 			int task = reqTime>0L ? weightedRandom(RANDOM, pTask) : 0;
 			req[task].value = 1;
 			t = getDelay();
-			e.useEnergy(name+" (idle)", idlePower * t / 1000.0);
+			e.useEnergy(name+" (idle)", false, idlePower * t / 1000.0);
 			if(task==0) {
 				long st = getOuterDelay();
-				e.useEnergy(name+" (sleep)", sleepPower * st / 1000.0);
+				e.useEnergy(name+" (sleep)", false, sleepPower * st / 1000.0);
 				t += st;
 			}
 			reqTime = getTime()+t;

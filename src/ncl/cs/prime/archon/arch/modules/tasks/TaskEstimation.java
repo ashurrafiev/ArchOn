@@ -9,12 +9,14 @@ import ncl.cs.prime.archon.arch.Estimation;
 public class TaskEstimation implements Estimation {
 
 	public Architecture arch = null;
+	public long simTime;
 
 	public long time;
 	public long numUserCommands;
 	public long responseTime;
 
 	private double energy;
+	private double activeEnergy;
 	private HashMap<String, Double> energyPerModule = new HashMap<>();
 
 	private int exceptions;
@@ -25,6 +27,8 @@ public class TaskEstimation implements Estimation {
 	@Override
 	public void init(Architecture arch) {
 		this.arch = arch;
+		this.simTime = System.currentTimeMillis();
+		
 		this.numUserCommands = 0;
 		this.responseTime = 0;
 		
@@ -48,8 +52,10 @@ public class TaskEstimation implements Estimation {
 		responseTime += time;
 	}
 
-	public void useEnergy(String name, double e) {
+	public void useEnergy(String name, boolean active, double e) {
 		energy += e;
+		if(active)
+			activeEnergy += e;
 		Double e0 = energyPerModule.get(name);
 		if(e0!=null)
 			e += e0;
@@ -81,10 +87,13 @@ public class TaskEstimation implements Estimation {
 				+ "\"User commands\": %d,\n"
 				+ "\"Mean response time\": %d,\n"
 				+ "\"Total energy\": %.3f,\n"
-				+ "\"Total exceptions\": %d,\n",
+				+ "\"Total active energy\": %.3f,\n"
+				+ "\"Total exceptions\": %d,\n"
+				+ "\"Simulation time\": %d,\n",
 				time, tstr, numUserCommands,
 				numUserCommands==0 ? 0 : responseTime/numUserCommands,
-				energy, exceptions
+				energy, activeEnergy, exceptions,
+				System.currentTimeMillis() - simTime
 			);
 		
 		System.out.println("\n\"Energy per component\": {");
