@@ -66,7 +66,7 @@ public class FaultyTask extends Task {
 				e.countException(name, ex.value);
 				
 				long t = preDelay;
-				e.useEnergy(name, false, power * t / 1000.0);
+				e.useEnergy(name, true, power * t / 1000.0);
 				return t;
 			}
 		}

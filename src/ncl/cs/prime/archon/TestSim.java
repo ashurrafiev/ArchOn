@@ -29,6 +29,7 @@ public class TestSim {
 				f = new File(args[i]);
 		}
 		
+		System.out.println(f.getAbsolutePath());
 		ProgramParserBytecode p = new ProgramParserBytecode();
 		if(p.compile(f, false)!=null) {
 			System.out.println("Done\n\n");
